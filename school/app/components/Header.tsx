@@ -1,38 +1,67 @@
-'use client'
+
+'use client';
+
 import { useState } from 'react';
+import Link from 'next/link';
+
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
+
+    const navLinks = [
+        { label: 'About', href: '#about' },
+        { label: 'Academics', href: '#academics' },
+        { label: 'Admissions', href: '/admissions' },
+        { label: 'Gallery', href: '#gallery' },
+    ];
+
     return (
-        <header className="fixed top-0 left-0 w-full z-50">
-            <nav className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between 
-        rounded-b-xl bg-white/10 backdrop-blur-md border-b border-white/20 shadow-md">
+        <header className="fixed top-0 left-0 w-full h-12 z-50">
 
-                {/* Logo */}
-                <a href="/" className="text-lg sm:text-xl font-bold tracking-wide bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">
-                    SCHOOL
-                </a>
+            {/* NAVBAR */}
+            <nav className="relative mx-auto max-w-7xl px-6 h-full flex items-center">
 
-                {/* Desktop links */}
-                <div className="hidden md:flex gap-6 text-sm font-medium text-gray-200">
-                    <a href="#about" className="hover:text-sky-400 transition-colors">About</a>
-                    <a href="#contact" className="hover:text-sky-400 transition-colors">Academics</a>
-                    <a href="#contact" className="hover:text-sky-400 transition-colors">Faculty</a>
-                    <a href="#contact" className="hover:text-sky-400 transition-colors">Admissions</a>
-                    <a href="#contact" className="hover:text-sky-400 transition-colors">Notices</a>
-                    <a href="#contact" className="hover:text-sky-400 transition-colors">Gallery</a>
-                    <a href="#contact" className="hover:text-sky-400 transition-colors">Contact</a>
+
+                {/* LEFT — LOGO */}
+                <div className="flex-1">
+                    <Link
+                        href="/"
+                        className="text-lg sm:text-xl font-bold tracking-wide 
+            bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent"
+                    >
+                        SCHOOL
+                    </Link>
                 </div>
 
-                {/* Desktop auth buttons */}
-                <div className="hidden md:flex gap-3">
-
+                {/* CENTER — NAV LINKS */}
+                <div className="hidden md:flex gap-8 absolute left-1/2 -translate-x-1/2">
+                    {navLinks.map(link => (
+                        <Link
+                            key={link.label}
+                            href={link.href}
+                            className="text-sm font-medium text-gray-200 hover:text-sky-400 transition-colors"
+                        >
+                            {link.label}
+                        </Link>
+                    ))}
                 </div>
 
-                {/* Mobile hamburger */}
+                {/* RIGHT — ACTION BUTTONS */}
+                <div className="hidden md:flex items-center gap-3 flex-1 justify-end">
+
+                    <a
+                        href="#contact"
+                        className="px-4 py-2 rounded-lg bg-transparent border-b-emerald-700
+            text-white font-semibold transition text-sm shadow-md"
+                    >
+                        Contact
+                    </a>
+                </div>
+
+                {/* MOBILE MENU BUTTON */}
                 <button
-                    className="md:hidden text-gray-200 focus:outline-none"
+                    className="md:hidden text-gray-200"
                     onClick={() => setIsOpen(!isOpen)}
-                    aria-label="Toggle menu"
+                    aria-label="Toggle Menu"
                 >
                     {isOpen ? (
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -46,36 +75,45 @@ export default function Header() {
                 </button>
             </nav>
 
-            {/* Mobile menu */}
+            {/* GLASS BACKDROP */}
+            <div className="absolute inset-0 -z-10 bg-white/10 backdrop-blur-md border-b border-white/20" />
+
+            {/* MOBILE MENU */}
             {isOpen && (
-                <div className="md:hidden bg-transparent backdrop-blur-md border-t border-white/10 px-6 py-4 space-y-4">
+                <div className="md:hidden backdrop-blur-xl bg-transparent opacity-75 border-t border-white/10 px-6 py-5">
                     <div className="flex flex-col gap-4 text-gray-200">
-                        <a href="#about" onClick={() => setIsOpen(false)} className="hover:text-sky-400">About</a>
-                        <a href="#about" onClick={() => setIsOpen(false)} className="hover:text-sky-400">Academics</a>
-                        <a href="#about" onClick={() => setIsOpen(false)} className="hover:text-sky-400">Faculty</a>
-                        <a href="#contact" onClick={() => setIsOpen(false)} className="hover:text-sky-400">Admissions</a>
-                        <a href="#about" onClick={() => setIsOpen(false)} className="hover:text-sky-400">Notices</a>
-                        <a href="#about" onClick={() => setIsOpen(false)} className="hover:text-sky-400">Gallery</a>
-                        <a href="#about" onClick={() => setIsOpen(false)} className="hover:text-sky-400">Contact</a>
+                        {navLinks.map(link => (
+                            <Link
+                                key={link.label}
+                                href={link.href}
+                                onClick={() => setIsOpen(false)}
+                                className="hover:text-sky-400 transition"
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
                     </div>
-                    <div className="flex flex-col gap-3 mt-4">
-                        <a
-                            href="/login"
+
+                    {/* Mobile buttons */}
+                    <div className="flex flex-col gap-3 mt-5">
+                        <Link
+                            href="/studio"
                             onClick={() => setIsOpen(false)}
-                            className="px-3 py-2 rounded-lg border border-white/30 text-gray-200 hover:bg-white/10 transition text-center"
+                            className="px-4 py-2 rounded-lg border border-white/25 text-gray-200 text-center"
                         >
-                            Login
-                        </a>
-                        <a
-                            href="/register"
+                            Studio
+                        </Link>
+
+                        <Link
+                            href="/dashboard"
                             onClick={() => setIsOpen(false)}
-                            className="px-3 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold transition text-center"
+                            className="px-4 py-2 rounded-lg bg-sky-600 text-white font-semibold text-center"
                         >
-                            Register
-                        </a>
+                            Dashboard
+                        </Link>
                     </div>
                 </div>
             )}
         </header>
-    )
+    );
 }

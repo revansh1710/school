@@ -1,6 +1,7 @@
+'use client';
 import Image from "next/image";
 import { urlFor } from "../../../sanity/lib/image";
-import { GraduationCap, Target, Rocket, Award, CheckCircle2, ArrowRight, Star } from "lucide-react";
+import { GraduationCap, Target, Rocket, CheckCircle2, Star } from "lucide-react";
 
 interface Facility {
   title: string;
@@ -18,7 +19,6 @@ interface AboutData {
   title: string;
   description: string;
   establishedYear: string;
-  affiliation: string;
   vision: string;
   mission: string;
   principalName: string;
@@ -33,336 +33,546 @@ type AboutProps = {
   data: AboutData;
 };
 
+const serifFont = "var(--font-playfair), 'Playfair Display', Georgia, serif";
+const sansFont = "var(--font-dm-sans), 'DM Sans', system-ui, sans-serif";
+
+/* ─── Divider ─────────────────────────────────────────────────────────────── */
+function DividerOrnament({ text }: { text: string }) {
+  return (
+    <section id='about'>
+    <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "3rem" }}>
+      <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, #C8B89A, transparent)" }} />
+      <span style={{ fontFamily: sansFont, fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600, color: "#8B7355", whiteSpace: "nowrap" }}>
+        {text}
+      </span>
+      <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, #C8B89A, transparent)" }} />
+    </div>
+    </section>
+  );
+}
+
+/* ─── Vision / Mission Card ───────────────────────────────────────────────── */
+function VMCard({
+  icon, labelText, labelColor, heading, body, gradient, glowColor,
+}: {
+  icon: React.ReactNode;
+  labelText: string;
+  labelColor: string;
+  heading: string;
+  body: string;
+  gradient: string;
+  glowColor: string;
+}) {
+  return (
+    <div
+      className="vm-card"
+      style={{
+        borderRadius: "1.5rem",
+        padding: "clamp(1.5rem, 4vw, 2rem)",
+        color: "#fff",
+        position: "relative",
+        overflow: "hidden",
+        background: gradient,
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.transform = "translateY(-5px)";
+        el.style.boxShadow = `0 24px 48px ${glowColor}`;
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.transform = "translateY(0)";
+        el.style.boxShadow = "none";
+      }}
+    >
+      {/* Shine orb */}
+      <div style={{ position: "absolute", top: -40, right: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.06)", pointerEvents: "none" }} />
+
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "1.25rem" }}>
+        <div style={{ width: 48, height: 48, borderRadius: "1rem", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.15)", flexShrink: 0 }}>
+          {icon}
+        </div>
+        <div>
+          <p style={{ fontFamily: sansFont, fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600, color: labelColor, marginBottom: "0.5rem" }}>
+            {labelText}
+          </p>
+          <h2 style={{ fontFamily: serifFont, fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)", fontWeight: 700, color: "#fff", marginBottom: "0.75rem", lineHeight: 1.2 }}>
+            {heading}
+          </h2>
+          <p style={{ fontFamily: sansFont, color: "rgba(255,255,255,0.82)", lineHeight: 1.8, fontWeight: 300, fontSize: "0.95rem" }}>
+            {body}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Facility Card ───────────────────────────────────────────────────────── */
+function FacilityCard({ facility, index }: { facility: Facility; index: number }) {
+  const facilityImageUrl = facility.image
+    ? urlFor(facility.image)?.width(800).height(500).url()
+    : null;
+
+  return (
+    <div
+      className="facility-card"
+      style={{
+        borderRadius: "1.5rem",
+        overflow: "hidden",
+        background: "#ffffff",
+        border: "1px solid rgba(200,151,58,0.12)",
+        boxShadow: "0 4px 20px rgba(15,35,71,0.07)",
+        transition: "transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275), box-shadow 0.35s ease",
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.transform = "translateY(-8px)";
+        el.style.boxShadow = "0 20px 48px rgba(15,35,71,0.15)";
+        const img = el.querySelector<HTMLElement>(".fac-img");
+        if (img) img.style.transform = "scale(1.07)";
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.transform = "translateY(0)";
+        el.style.boxShadow = "0 4px 20px rgba(15,35,71,0.07)";
+        const img = el.querySelector<HTMLElement>(".fac-img");
+        if (img) img.style.transform = "scale(1)";
+      }}
+    >
+      {/* Image area */}
+      <div style={{ position: "relative", overflow: "hidden", height: "13rem", background: "#dde4f0" }}>
+        {/* Index badge */}
+        <div style={{
+          position: "absolute", top: "1rem", left: "1rem", zIndex: 10,
+          width: 36, height: 36, borderRadius: "0.75rem",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: "linear-gradient(135deg, #1B3A6B, #2563EB)",
+          color: "#fff", fontFamily: serifFont, fontWeight: 700, fontSize: "0.9rem",
+        }}>
+          {index + 1}
+        </div>
+
+        {facilityImageUrl ? (
+          <Image
+            src={facilityImageUrl}
+            alt={facility.title}
+            width={400}
+            height={300}
+            className="fac-img"
+            style={{ objectFit: "cover", width: "100%", height: "100%", display: "block", transition: "transform 0.5s ease" }}
+          />
+        ) : (
+          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #dde4f0, #bfcfe8)" }}>
+            <GraduationCap size={48} color="#7B9DC7" />
+          </div>
+        )}
+
+        {/* Gradient overlay */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(15,35,71,0.72) 0%, transparent 55%)" }} />
+
+        {/* Title over image */}
+        <div style={{ position: "absolute", bottom: "1rem", left: "1rem", right: "1rem" }}>
+          <h3 style={{ fontFamily: sansFont, fontWeight: 700, color: "#fff", fontSize: "1rem", textTransform: "uppercase", letterSpacing: "0.05em", lineHeight: 1.3, margin: 0 }}>
+            {facility.title}
+          </h3>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div style={{ padding: "1.25rem 1.5rem" }}>
+        <p style={{ fontFamily: sansFont, color: "#64748B", fontSize: "0.875rem", lineHeight: 1.75, fontWeight: 300, margin: 0 }}>
+          {facility.description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Achievement Item ────────────────────────────────────────────────────── */
+function AchievementItem({ item }: { item: Achievement }) {
+  return (
+    <div
+      className="achievement-item"
+      style={{
+        display: "flex",
+        gap: "1.25rem",
+        padding: "1.5rem",
+        borderRadius: "1rem",
+        borderLeft: "3px solid transparent",
+        transition: "background 0.22s ease, border-color 0.22s ease",
+        cursor: "default",
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.background = "#ffffff";
+        el.style.borderLeftColor = "#2563EB";
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.background = "transparent";
+        el.style.borderLeftColor = "transparent";
+      }}
+    >
+      <div style={{ flexShrink: 0, marginTop: "0.25rem" }}>
+        <div style={{ width: 40, height: 40, borderRadius: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center", background: "#FFFBEB" }}>
+          <CheckCircle2 size={18} color="#F59E0B" />
+        </div>
+      </div>
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.35rem", flexWrap: "wrap" }}>
+          <span style={{ fontFamily: sansFont, fontSize: "0.72rem", fontWeight: 700, color: "#2563EB", background: "#EFF6FF", padding: "0.2rem 0.75rem", borderRadius: "999px" }}>
+            {item.year}
+          </span>
+          <h3 style={{ fontFamily: serifFont, fontWeight: 700, fontSize: "1.05rem", color: "#1B3A6B", margin: 0 }}>
+            {item.title}
+          </h3>
+        </div>
+        <p style={{ fontFamily: sansFont, color: "#64748B", fontSize: "0.875rem", lineHeight: 1.75, margin: 0 }}>
+          {item.description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main Component ─────────────────────────────────────────────────────── */
 export default function AboutSection({ data }: AboutProps) {
   const principalImageUrl = data.principalImage
     ? urlFor(data.principalImage)?.width(600).height(600).quality(90).url()
     : null;
 
   return (
-    <section className="bg-[#F5F0E8] font-['Playfair_Display',serif]">
+    <section style={{ background: "#FAF7F2", fontFamily: sansFont, position: "relative", overflow: "hidden" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+        .fac-img { transition: transform 0.5s ease; }
 
-        .about-section * { font-family: 'DM Sans', sans-serif; }
-        .serif { font-family: 'Playfair Display', serif; }
-
-        .hero-banner {
-          background: linear-gradient(135deg, #1B3A6B 0%, #0F2347 50%, #1a2d5a 100%);
-          position: relative;
-          overflow: hidden;
+        /* VM cards grid */
+        .vm-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.25rem;
         }
-        .hero-banner::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        @media (min-width: 768px) {
+          .vm-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        .vision-card {
-          background: linear-gradient(135deg, #2563EB, #1D4ED8);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        /* Facilities grid */
+        .fac-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
         }
-        .vision-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(37,99,235,0.35); }
-
-        .mission-card {
-          background: linear-gradient(135deg, #F97316, #EA580C);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        @media (min-width: 640px) {
+          .fac-grid { grid-template-columns: repeat(2, 1fr); }
         }
-        .mission-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(249,115,22,0.35); }
-
-        .facility-card {
-          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          background: white;
-        }
-        .facility-card:hover { transform: translateY(-8px); }
-        .facility-card:hover .facility-img { transform: scale(1.08); }
-        .facility-img { transition: transform 0.5s ease; }
-
-        .achievement-item {
-          transition: background 0.2s ease;
-          border-left: 3px solid transparent;
-        }
-        .achievement-item:hover {
-          background: white;
-          border-left-color: #2563EB;
+        @media (min-width: 1024px) {
+          .fac-grid { grid-template-columns: repeat(3, 1fr); }
         }
 
-        .principal-section {
-          background: linear-gradient(135deg, #FFF8F0 0%, #FFF3E0 100%);
-          border: 2px solid #FDDCB5;
+        /* Achievements grid */
+        .ach-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 0.5rem;
+        }
+        @media (min-width: 768px) {
+          .ach-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        .tag-pill {
-          background: rgba(255,255,255,0.15);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .section-label {
-          font-family: 'DM Sans', sans-serif;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          font-size: 0.7rem;
-          font-weight: 500;
-        }
-
-        .number-badge {
-          background: linear-gradient(135deg, #1B3A6B, #2563EB);
-          color: white;
-          font-family: 'Playfair Display', serif;
-          font-weight: 700;
-        }
-
-        .quote-mark {
-          font-family: 'Playfair Display', serif;
-          font-size: 8rem;
-          line-height: 1;
-          color: #F97316;
-          opacity: 0.3;
-        }
-
-        .divider-ornament {
+        /* Principal flex layout */
+        .principal-layout {
           display: flex;
+          flex-direction: column;
+          gap: 2.5rem;
           align-items: center;
-          gap: 1rem;
         }
-        .divider-ornament::before,
-        .divider-ornament::after {
-          content: '';
-          flex: 1;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, #C8B89A, transparent);
+        @media (min-width: 768px) {
+          .principal-layout {
+            flex-direction: row;
+            align-items: flex-start;
+          }
+        }
+
+        /* Hero inner layout */
+        .hero-inner {
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+          align-items: center;
+          text-align: center;
+        }
+        @media (min-width: 768px) {
+          .hero-inner {
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: space-between;
+            text-align: left;
+          }
+        }
+
+        /* Section header layout */
+        .section-header {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-bottom: 3.5rem;
+        }
+        @media (min-width: 768px) {
+          .section-header {
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: space-between;
+          }
+        }
+
+        /* VM section overlap */
+        .vm-section {
+          padding: 0 clamp(1.5rem, 5vw, 4rem);
+          margin-top: -1px;
         }
       `}</style>
 
-      <div className="about-section">
+      {/* ===== Hero Banner ===== */}
+      <div style={{
+        padding: "clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem)",
+        position: "relative",
+        overflow: "hidden",
+        background: "linear-gradient(135deg, #0F2347 0%, #1B3A6B 55%, #1a3260 100%)",
+      }}>
+        {/* Dot grid */}
+        <div style={{
+          position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.6,
+          backgroundImage: "radial-gradient(rgba(255,255,255,0.055) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }} />
+        {/* Gold top line */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent, #C8973A, transparent)", opacity: 0.6, pointerEvents: "none" }} />
+        {/* Blue glow orb */}
+        <div style={{ position: "absolute", top: -160, right: -100, width: 480, height: 480, background: "radial-gradient(circle, rgba(37,99,235,0.28), transparent 70%)", filter: "blur(50px)", pointerEvents: "none" }} />
+        {/* Warm glow */}
+        <div style={{ position: "absolute", bottom: -80, left: -80, width: 320, height: 320, background: "radial-gradient(circle, rgba(200,151,58,0.14), transparent 70%)", filter: "blur(40px)", pointerEvents: "none" }} />
 
-        {/* ===== Hero Banner ===== */}
-        <div className="hero-banner px-6 md:px-16 py-16 md:py-24">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
-              <div className="max-w-2xl">
-                <div className="tag-pill inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-blue-200 section-label mb-6">
-                  <GraduationCap size={12} />
-                  About Our Institution
-                </div>
-                <h1 className="serif text-5xl md:text-7xl font-black text-white leading-[1.05] mb-6">
-                  {data.title}
-                </h1>
-                <p className="text-blue-200 text-lg leading-relaxed max-w-xl font-light">
-                  {data.description}
-                </p>
-              </div>
+        <div style={{ maxWidth: "72rem", margin: "0 auto", position: "relative", zIndex: 10 }}>
+          <div className="hero-inner">
+            {/* Title + description */}
+            <div style={{ maxWidth: "42rem" }}>
+              <h1 style={{
+                fontFamily: serifFont,
+                fontSize: "clamp(2.4rem, 6vw, 4.5rem)",
+                fontWeight: 900,
+                color: "#fff",
+                lineHeight: 1.08,
+                marginBottom: "1.25rem",
+              }}>
+                {data.title}
+              </h1>
+              <p style={{
+                fontFamily: sansFont,
+                color: "rgba(191,207,232,0.9)",
+                lineHeight: 1.8,
+                fontSize: "clamp(0.95rem, 1.5vw, 1.1rem)",
+                fontWeight: 300,
+                maxWidth: "40rem",
+              }}>
+                {data.description}
+              </p>
+            </div>
 
-              <div className="flex flex-col gap-3 md:items-end shrink-0">
-                <div className="tag-pill px-5 py-3 rounded-2xl text-center">
-                  <div className="text-blue-300 section-label mb-0.5">Established</div>
-                  <div className="text-white text-2xl serif font-bold">{data.establishedYear}</div>
-                </div>
-                <div className="tag-pill px-5 py-3 rounded-2xl text-center">
-                  <div className="text-blue-300 section-label mb-0.5">Affiliation</div>
-                  <div className="text-white font-semibold">{data.affiliation}</div>
-                </div>
-              </div>
+            {/* Established card */}
+            <div style={{
+              padding: "1.25rem 2rem",
+              borderRadius: "1.25rem",
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.13)",
+              backdropFilter: "blur(12px)",
+              textAlign: "center",
+              flexShrink: 0,
+            }}>
+              <p style={{ fontFamily: sansFont, fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600, color: "rgba(191,207,232,0.7)", marginBottom: "0.35rem" }}>
+                Established
+              </p>
+              <p style={{ fontFamily: serifFont, fontSize: "2rem", fontWeight: 700, color: "#fff", margin: 0 }}>
+                {data.establishedYear}
+              </p>
             </div>
           </div>
         </div>
-
-        {/* ===== Vision & Mission ===== */}
-        <div className="px-6 md:px-16 relative z-10">
-          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-5">
-            <div className="vision-card rounded-3xl p-8 text-white">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0">
-                  <Target size={22} className="text-white" />
-                </div>
-                <div>
-                  <div className="section-label text-blue-200 mb-2">Our Vision</div>
-                  <h2 className="serif text-2xl font-bold text-white mb-3">Where We're Headed</h2>
-                  <p className="text-blue-100 leading-relaxed font-light">{data.vision}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mission-card rounded-3xl p-8 text-white">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0">
-                  <Rocket size={22} className="text-white" />
-                </div>
-                <div>
-                  <div className="section-label text-orange-200 mb-2">Our Mission</div>
-                  <h2 className="serif text-2xl font-bold text-white mb-3">How We Get There</h2>
-                  <p className="text-orange-100 leading-relaxed font-light">{data.mission}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ===== Principal Message ===== */}
-        <div className="px-6 md:px-16 py-20">
-          <div className="max-w-6xl mx-auto">
-            <div className="divider-ornament mb-12">
-              <span className="section-label text-[#8B7355] whitespace-nowrap">Principal's Message</span>
-            </div>
-
-            <div className="principal-section rounded-[2.5rem] p-8 md:p-12 overflow-hidden relative">
-              <div className="absolute top-4 left-8 quote-mark leading-none select-none">"</div>
-
-              <div className="relative flex flex-col md:flex-row gap-10 items-center">
-                {principalImageUrl && (
-                  <div className="shrink-0 relative">
-                    <div className="absolute inset-0 bg-linear-to-br from-blue-200 to-orange-200 rounded-3xl blur-xl opacity-60 scale-105" />
-                    <Image
-                      src={principalImageUrl}
-                      alt={data.principalName}
-                      width={220}
-                      height={280}
-                      className="relative rounded-3xl object-cover shadow-2xl w-55 h-70"
-                    />
-                  </div>
-                )}
-
-                <div className="flex-1">
-                  <div className="section-label text-[#8B7355] mb-3">Meet Our Principal</div>
-                  <h2 className="serif text-3xl md:text-4xl font-bold text-[#1B3A6B] mb-1">
-                    {data.principalName}
-                  </h2>
-                  <p className="text-orange-600 font-medium italic mb-6">{data.designation}</p>
-
-                  <p className="text-slate-600 leading-relaxed text-lg font-light border-l-4 border-orange-400 pl-6">
-                    {data.principalMessage}
-                  </p>
-
-                  <div className="mt-6 flex items-center gap-3">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={14} className="text-amber-400 fill-amber-400" />
-                      ))}
-                    </div>
-                    <span className="text-sm text-slate-500 font-medium">Excellence in Education</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ===== Facilities ===== */}
-        {data.facilities && data.facilities.length > 0 && (
-          <div className="bg-[#1B3A6B] px-6 md:px-16 py-20">
-            <div className="max-w-6xl mx-auto">
-              <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-4">
-                <div>
-                  <div className="section-label text-blue-400 mb-3">World-Class Infrastructure</div>
-                  <h2 className="serif text-4xl md:text-5xl font-bold text-white">
-                    Our Facilities
-                  </h2>
-                </div>
-                <p className="text-blue-300 max-w-xs font-light leading-relaxed">
-                  State-of-the-art environments designed to inspire learning and holistic growth.
-                </p>
-              </div>
-
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {data.facilities.map((facility, index) => {
-                  const facilityImageUrl = facility.image
-                    ? urlFor(facility.image)?.width(800).height(500).url()
-                    : null;
-
-                  return (
-                    <div key={index} className="facility-card rounded-3xl overflow-hidden shadow-xl">
-                      <div className="relative overflow-hidden h-52">
-                        <div className="number-badge absolute top-4 left-4 z-10 w-9 h-9 rounded-xl flex items-center justify-center text-sm">
-                          {index + 1}.
-                        </div>
-                        {facilityImageUrl ? (
-                          <Image
-                            src={facilityImageUrl}
-                            alt={facility.title}
-                            width={400}
-                            height={300}
-                            className="facility-img object-cover w-full h-full"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-linear-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                            <GraduationCap size={48} className="text-blue-400" />
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
-                        <div className="absolute bottom-4 left-4 right-4">
-                          <h3 className="font-bold text-white text-lg uppercase tracking-wide leading-tight">
-                            {facility.title}
-                          </h3>
-                        </div>
-                      </div>
-
-                      <div className="p-5 flex items-start justify-between gap-3">
-                        <p className="text-slate-600 text-sm leading-relaxed flex-1">
-                          {facility.description}
-                        </p>
-                        <div className="shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                          <ArrowRight size={14} className="text-blue-600" />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ===== Achievements ===== */}
-        {data.achievements && data.achievements.length > 0 && (
-          <div className="px-6 md:px-16 py-20">
-            <div className="max-w-6xl mx-auto">
-              <div className="divider-ornament mb-12">
-                <span className="section-label text-[#8B7355] whitespace-nowrap flex items-center gap-2">
-                  <Award size={14} className="text-amber-500" />
-                  School Achievements
-                </span>
-              </div>
-
-              <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
-                <h2 className="serif text-4xl md:text-5xl font-bold text-[#1B3A6B]">
-                  Institutional<br />Excellence
-                </h2>
-                <p className="text-slate-500 max-w-xs font-light leading-relaxed">
-                  Harmony has earned national and state recognition for providing global education.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-3">
-                {data.achievements.map((item, index) => (
-                  <div
-                    key={index}
-                    className="achievement-item flex gap-5 p-6 rounded-2xl cursor-default"
-                  >
-                    <div className="shrink-0 mt-1">
-                      <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                        <CheckCircle2 size={18} className="text-amber-500" />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-3 mb-1 flex-wrap">
-                        <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                          {item.year}
-                        </span>
-                        <h3 className="serif font-bold text-[#1B3A6B] text-lg">{item.title}</h3>
-                      </div>
-                      <p className="text-slate-500 text-sm leading-relaxed">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
       </div>
+
+      {/* ===== Vision & Mission ===== */}
+      <div className="vm-section" style={{ paddingTop: "2.5rem", paddingBottom: "0" }}>
+        <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+          <div className="vm-grid">
+            <VMCard
+              icon={<Target size={22} color="#fff" />}
+              labelText="Our Vision"
+              labelColor="rgba(147,197,253,0.9)"
+              heading="Where We're Headed"
+              body={data.vision}
+              gradient="linear-gradient(135deg, #1D4ED8, #2563EB)"
+              glowColor="rgba(37,99,235,0.3)"
+            />
+            <VMCard
+              icon={<Rocket size={22} color="#fff" />}
+              labelText="Our Mission"
+              labelColor="rgba(254,215,170,0.9)"
+              heading="How We Get There"
+              body={data.mission}
+              gradient="linear-gradient(135deg, #EA580C, #F97316)"
+              glowColor="rgba(249,115,22,0.3)"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ===== Principal's Message ===== */}
+      <div style={{ padding: "clamp(3.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem)" }}>
+        <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+          <DividerOrnament text="Principal's Message" />
+
+          <div style={{
+            borderRadius: "2rem",
+            padding: "clamp(2rem, 5vw, 3.5rem)",
+            overflow: "hidden",
+            position: "relative",
+            background: "linear-gradient(135deg, #FFFBF0, #FFF7E6)",
+            border: "1px solid rgba(200,151,58,0.22)",
+          }}>
+            {/* Decorative quote mark */}
+            <div style={{ position: "absolute", top: "1rem", left: "2.25rem", fontFamily: serifFont, fontSize: "8rem", lineHeight: 1, color: "#C8973A", opacity: 0.18, pointerEvents: "none", userSelect: "none" }}>
+              "
+            </div>
+            {/* Corner glow */}
+            <div style={{ position: "absolute", bottom: 0, right: 0, width: 224, height: 224, background: "radial-gradient(circle at bottom right, rgba(200,151,58,0.1), transparent 70%)", pointerEvents: "none" }} />
+
+            <div className="principal-layout" style={{ position: "relative", zIndex: 10 }}>
+              {principalImageUrl && (
+                <div style={{ flexShrink: 0, position: "relative", alignSelf: "center" }}>
+                  {/* Aura */}
+                  <div style={{
+                    position: "absolute", inset: -8, borderRadius: "1.5rem",
+                    background: "linear-gradient(135deg, rgba(37,99,235,0.2), rgba(200,151,58,0.2))",
+                    filter: "blur(16px)", opacity: 0.7,
+                  }} />
+                  <Image
+                    src={principalImageUrl}
+                    alt={data.principalName}
+                    width={200}
+                    height={260}
+                    style={{
+                      display: "block",
+                      borderRadius: "1.5rem",
+                      objectFit: "cover",
+                      boxShadow: "0 20px 48px rgba(15,35,71,0.18)",
+                      position: "relative",
+                      width: "clamp(140px, 22vw, 200px)",
+                      height: "auto",
+                    }}
+                  />
+                </div>
+              )}
+
+              <div style={{ flex: 1 }}>
+                <p style={{ fontFamily: sansFont, fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600, color: "#C8973A", marginBottom: "0.6rem" }}>
+                  Meet Our Principal
+                </p>
+                <h2 style={{ fontFamily: serifFont, fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", fontWeight: 700, color: "#1B3A6B", lineHeight: 1.1, marginBottom: "0.35rem" }}>
+                  {data.principalName}
+                </h2>
+                <p style={{ fontFamily: sansFont, fontWeight: 500, fontStyle: "italic", color: "#EA580C", fontSize: "0.95rem", marginBottom: "1.75rem" }}>
+                  {data.designation}
+                </p>
+
+                <p style={{
+                  fontFamily: sansFont,
+                  color: "#374151",
+                  lineHeight: 1.9,
+                  fontSize: "clamp(0.95rem, 1.5vw, 1.05rem)",
+                  fontWeight: 300,
+                  paddingLeft: "1.25rem",
+                  borderLeft: "3px solid #C8973A",
+                }}>
+                  {data.principalMessage}
+                </p>
+
+                <div style={{ marginTop: "1.5rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                  <div style={{ display: "flex" }}>
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={13} fill="#F59E0B" color="#F59E0B" />
+                    ))}
+                  </div>
+                  <span style={{ fontFamily: sansFont, fontSize: "0.85rem", fontWeight: 500, color: "#64748B" }}>
+                    Excellence in Education
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== Facilities ===== */}
+      {data.facilities && data.facilities.length > 0 && (
+        <div style={{
+          padding: "clamp(3.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem)",
+          position: "relative",
+          overflow: "hidden",
+          background: "linear-gradient(180deg, #0F2347 0%, #0c1d3a 100%)",
+        }}>
+          {/* Dot texture */}
+          <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+          {/* Gold top line */}
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg, transparent, #C8973A, transparent)", opacity: 0.35, pointerEvents: "none" }} />
+
+          <div style={{ maxWidth: "72rem", margin: "0 auto", position: "relative", zIndex: 10 }}>
+            <div className="section-header">
+              <div>
+                <p style={{ fontFamily: sansFont, fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600, color: "rgba(200,151,58,0.85)", marginBottom: "0.6rem" }}>
+                  World-Class Infrastructure
+                </p>
+                <h2 style={{ fontFamily: serifFont, fontSize: "clamp(2rem, 5vw, 3.2rem)", fontWeight: 700, color: "#fff", lineHeight: 1.1, margin: 0 }}>
+                  Our Facilities
+                </h2>
+              </div>
+              <p style={{ fontFamily: sansFont, color: "rgba(191,207,232,0.7)", lineHeight: 1.75, fontSize: "0.95rem", maxWidth: "22rem", fontWeight: 300 }}>
+                State-of-the-art environments designed to inspire learning and holistic growth.
+              </p>
+            </div>
+
+            <div className="fac-grid">
+              {data.facilities.map((facility, i) => (
+                <FacilityCard key={i} facility={facility} index={i} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== Achievements ===== */}
+      {data.achievements && data.achievements.length > 0 && (
+        <div style={{ padding: "clamp(3.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem)", background: "#FAF7F2" }}>
+          <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+            <DividerOrnament text="School Achievements" />
+
+            <div className="section-header">
+              <h2 style={{ fontFamily: serifFont, fontSize: "clamp(2rem, 5vw, 3.2rem)", fontWeight: 700, color: "#1B3A6B", lineHeight: 1.1, margin: 0 }}>
+                Institutional<br />Excellence
+              </h2>
+              <p style={{ fontFamily: sansFont, color: "#64748B", lineHeight: 1.75, fontSize: "0.95rem", maxWidth: "22rem", fontWeight: 300 }}>
+                Recognised nationally for providing world-class, globally minded education.
+              </p>
+            </div>
+
+            <div className="ach-grid">
+              {data.achievements.map((item, i) => (
+                <AchievementItem key={i} item={item} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

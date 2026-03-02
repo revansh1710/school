@@ -24,4 +24,3 @@ export const aboutQuery = groq`
   }
 }
 `;
-console.log(aboutQuery)
