@@ -40,13 +40,13 @@ const sansFont = "var(--font-dm-sans), 'DM Sans', system-ui, sans-serif";
 function DividerOrnament({ text }: { text: string }) {
   return (
     <section id='about'>
-    <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "3rem" }}>
-      <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, #C8B89A, transparent)" }} />
-      <span style={{ fontFamily: sansFont, fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600, color: "#8B7355", whiteSpace: "nowrap" }}>
-        {text}
-      </span>
-      <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, #C8B89A, transparent)" }} />
-    </div>
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "3rem" }}>
+        <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, #C8B89A, transparent)" }} />
+        <span style={{ fontFamily: sansFont, fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600, color: "#8B7355", whiteSpace: "nowrap" }}>
+          {text}
+        </span>
+        <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, #C8B89A, transparent)" }} />
+      </div>
     </section>
   );
 }
@@ -100,7 +100,7 @@ function VMCard({
           <h2 style={{ fontFamily: serifFont, fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)", fontWeight: 700, color: "#fff", marginBottom: "0.75rem", lineHeight: 1.2 }}>
             {heading}
           </h2>
-          <p style={{ fontFamily: sansFont, color: "rgba(255,255,255,0.82)", lineHeight: 1.8, fontWeight: 300, fontSize: "0.95rem" }}>
+          <p style={{ fontFamily: sansFont, color: "rgba(255,255,255,0.82)", lineHeight: 1.8, fontWeight: 300, fontSize: "lg:0.95rem" }}>
             {body}
           </p>
         </div>
@@ -217,7 +217,7 @@ function AchievementItem({ item }: { item: Achievement }) {
     >
       <div style={{ flexShrink: 0, marginTop: "0.25rem" }}>
         <div style={{ width: 40, height: 40, borderRadius: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center", background: "#FFFBEB" }}>
-          <CheckCircle2 size={18} color="#F59E0B" />
+          <CheckCircle2 size={12} color="#F59E0B" />
         </div>
       </div>
       <div>
@@ -246,9 +246,16 @@ export default function AboutSection({ data }: AboutProps) {
   return (
     <section style={{ background: "#FAF7F2", fontFamily: sansFont, position: "relative", overflow: "hidden" }}>
       <style>{`
+
         .fac-img { transition: transform 0.5s ease; }
 
-        /* VM cards grid */
+        /* SMALL DEVICES PARAGRAPH FIX */
+        @media (min-width:300px) and (max-width:425px){
+          p{
+            font-size:0.6rem !important;
+          }
+        }
+
         .vm-grid {
           display: grid;
           grid-template-columns: 1fr;
@@ -258,7 +265,6 @@ export default function AboutSection({ data }: AboutProps) {
           .vm-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* Facilities grid */
         .fac-grid {
           display: grid;
           grid-template-columns: 1fr;
@@ -271,7 +277,6 @@ export default function AboutSection({ data }: AboutProps) {
           .fac-grid { grid-template-columns: repeat(3, 1fr); }
         }
 
-        /* Achievements grid */
         .ach-grid {
           display: grid;
           grid-template-columns: 1fr;
@@ -281,7 +286,6 @@ export default function AboutSection({ data }: AboutProps) {
           .ach-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* Principal flex layout */
         .principal-layout {
           display: flex;
           flex-direction: column;
@@ -295,7 +299,6 @@ export default function AboutSection({ data }: AboutProps) {
           }
         }
 
-        /* Hero inner layout */
         .hero-inner {
           display: flex;
           flex-direction: column;
@@ -312,7 +315,6 @@ export default function AboutSection({ data }: AboutProps) {
           }
         }
 
-        /* Section header layout */
         .section-header {
           display: flex;
           flex-direction: column;
@@ -327,7 +329,6 @@ export default function AboutSection({ data }: AboutProps) {
           }
         }
 
-        /* VM section overlap */
         .vm-section {
           padding: 0 clamp(1.5rem, 5vw, 4rem);
           margin-top: -1px;
@@ -372,7 +373,7 @@ export default function AboutSection({ data }: AboutProps) {
                 fontFamily: sansFont,
                 color: "rgba(191,207,232,0.9)",
                 lineHeight: 1.8,
-                fontSize: "clamp(0.95rem, 1.5vw, 1.1rem)",
+                fontSize: "clamp(lg:0.95rem, 1.5vw, 1.1rem)",
                 fontWeight: 300,
                 maxWidth: "40rem",
               }}>
@@ -481,7 +482,7 @@ export default function AboutSection({ data }: AboutProps) {
                 <h2 style={{ fontFamily: serifFont, fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", fontWeight: 700, color: "#1B3A6B", lineHeight: 1.1, marginBottom: "0.35rem" }}>
                   {data.principalName}
                 </h2>
-                <p style={{ fontFamily: sansFont, fontWeight: 500, fontStyle: "italic", color: "#EA580C", fontSize: "0.95rem", marginBottom: "1.75rem" }}>
+                <p style={{ fontFamily: sansFont, fontWeight: 500, fontStyle: "italic", color: "#EA580C", fontSize: "lg:0.95rem", marginBottom: "1.75rem" }}>
                   {data.designation}
                 </p>
 
@@ -489,7 +490,7 @@ export default function AboutSection({ data }: AboutProps) {
                   fontFamily: sansFont,
                   color: "#374151",
                   lineHeight: 1.9,
-                  fontSize: "clamp(0.95rem, 1.5vw, 1.05rem)",
+                  fontSize: "clamp(lg:0.95rem, 1.5vw, 1.05rem)",
                   fontWeight: 300,
                   paddingLeft: "1.25rem",
                   borderLeft: "3px solid #C8973A",
@@ -536,7 +537,7 @@ export default function AboutSection({ data }: AboutProps) {
                   Our Facilities
                 </h2>
               </div>
-              <p style={{ fontFamily: sansFont, color: "rgba(191,207,232,0.7)", lineHeight: 1.75, fontSize: "0.95rem", maxWidth: "22rem", fontWeight: 300 }}>
+              <p style={{ fontFamily: sansFont, color: "rgba(191,207,232,0.7)", lineHeight: 1.75, fontSize: "lg:0.95rem", maxWidth: "22rem", fontWeight: 300 }}>
                 State-of-the-art environments designed to inspire learning and holistic growth.
               </p>
             </div>
@@ -560,7 +561,7 @@ export default function AboutSection({ data }: AboutProps) {
               <h2 style={{ fontFamily: serifFont, fontSize: "clamp(2rem, 5vw, 3.2rem)", fontWeight: 700, color: "#1B3A6B", lineHeight: 1.1, margin: 0 }}>
                 Institutional<br />Excellence
               </h2>
-              <p style={{ fontFamily: sansFont, color: "#64748B", lineHeight: 1.75, fontSize: "0.95rem", maxWidth: "22rem", fontWeight: 300 }}>
+              <p style={{ fontFamily: sansFont, color: "#64748B", lineHeight: 1.75, fontSize: "lg:0.95rem", maxWidth: "22rem", fontWeight: 300 }}>
                 Recognised nationally for providing world-class, globally minded education.
               </p>
             </div>

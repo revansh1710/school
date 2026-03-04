@@ -12,6 +12,7 @@ export default function Header() {
         { label: 'Academics', href: '#academics' },
         { label: 'Admissions', href: '/admissions' },
         { label: 'Gallery', href: '#gallery' },
+        { label: 'Contact', href: '#contact' },
     ];
 
     return (
@@ -53,7 +54,7 @@ export default function Header() {
                         className="px-4 py-2 rounded-lg bg-transparent border-b-emerald-700
             text-white font-semibold transition text-sm shadow-md"
                     >
-                        Contact
+                        Dashboard
                     </a>
                 </div>
 
@@ -64,7 +65,7 @@ export default function Header() {
                     aria-label="Toggle Menu"
                 >
                     {isOpen ? (
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <svg className="w-6 h-6 right-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     ) : (
@@ -80,7 +81,7 @@ export default function Header() {
 
             {/* MOBILE MENU */}
             {isOpen && (
-                <div className="md:hidden backdrop-blur-xl bg-transparent opacity-75 border-t border-white/10 px-6 py-5">
+                <div className="md:hidden backdrop-blur-xl bg-transparent border-white/10 px-6 py-5">
                     <div className="flex flex-col gap-4 text-gray-200">
                         {navLinks.map(link => (
                             <Link
@@ -95,19 +96,11 @@ export default function Header() {
                     </div>
 
                     {/* Mobile buttons */}
-                    <div className="flex flex-col gap-3 mt-5">
-                        <Link
-                            href="/studio"
-                            onClick={() => setIsOpen(false)}
-                            className="px-4 py-2 rounded-lg border border-white/25 text-gray-200 text-center"
-                        >
-                            Studio
-                        </Link>
-
+                    <div className='flex items-center justify-center'>
                         <Link
                             href="/dashboard"
                             onClick={() => setIsOpen(false)}
-                            className="px-4 py-2 rounded-lg bg-sky-600 text-white font-semibold text-center"
+                            className=" bg-violet-400  text-white font-medium text-center"
                         >
                             Dashboard
                         </Link>

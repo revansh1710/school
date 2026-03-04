@@ -1,4 +1,5 @@
 'use client';
+
 interface Department {
   name: string;
   description: string;
@@ -26,6 +27,46 @@ export default function AcademicsSection({ data }: Props) {
   return (
     <section style={{ position: "relative", overflow: "hidden", background: "#ffffff" }} id="academics">
 
+      {/* RESPONSIVE FIX */}
+      <style>{`
+
+        @media (min-width:320px) and (max-width:425px){
+
+          p{
+            font-size:0.6rem !important;
+          }
+
+          h1{
+            font-size:1.7rem !important;
+            line-height:1.2 !important;
+          }
+
+          h2{
+            font-size:1.4rem !important;
+          }
+
+          h3{
+            font-size:1rem !important;
+          }
+
+          section[id="academics"] > div{
+            padding-left:20px !important;
+            padding-right:20px !important;
+          }
+
+          section[id="academics"] > div:first-child{
+            padding-top:60px !important;
+            padding-bottom:70px !important;
+          }
+
+          section[id="academics"] span{
+            font-size:0.6rem !important;
+          }
+
+        }
+
+      `}</style>
+
       {/* ===== Hero ===== */}
       <div style={{
         position: "relative",
@@ -33,13 +74,12 @@ export default function AcademicsSection({ data }: Props) {
         overflow: "hidden",
         padding: "80px 64px 96px",
       }}>
-        {/* Grid overlay */}
         <div style={{
           position: "absolute", inset: 0,
           backgroundImage: "radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)",
           backgroundSize: "24px 24px", opacity: 0.4, pointerEvents: "none",
         }} />
-        {/* Glow */}
+
         <div style={{
           position: "absolute", top: -120, right: -120,
           width: 420, height: 420,
@@ -50,7 +90,7 @@ export default function AcademicsSection({ data }: Props) {
         <div style={{ maxWidth: 1152, margin: "0 auto", position: "relative", zIndex: 10 }}>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 32 }}>
             <div style={{ maxWidth: 640 }}>
-              {/* Badge */}
+
               <div style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase",
@@ -94,7 +134,7 @@ export default function AcademicsSection({ data }: Props) {
                 </div>
                 <div style={{
                   fontFamily: "var(--font-playfair), Georgia, serif",
-                  color: "#ffffff", fontWeight: 700, fontSize: "1.25rem",
+                  color: "#ffffff", fontWeight: 700, fontSize: "0.9rem",
                 }}>
                   {data.board}
                 </div>
@@ -118,6 +158,7 @@ export default function AcademicsSection({ data }: Props) {
             }}>
               Grade Range
             </div>
+
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
               {data.classes.map((cls, i) => (
                 <span key={i} style={{
@@ -139,7 +180,6 @@ export default function AcademicsSection({ data }: Props) {
         <div style={{ padding: "80px 64px" }}>
           <div style={{ maxWidth: 1152, margin: "0 auto" }}>
 
-            {/* Section divider label */}
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
               <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
               <span style={{
@@ -160,6 +200,7 @@ export default function AcademicsSection({ data }: Props) {
               }}>
                 Our Disciplines
               </h2>
+
               <p style={{ color: "#64748b", maxWidth: 480, fontWeight: 300, lineHeight: 1.7 }}>
                 Specialised departments delivering world-class instruction across every field of knowledge.
               </p>
@@ -190,7 +231,7 @@ export default function AcademicsSection({ data }: Props) {
               overflow: "hidden",
               padding: "48px 56px",
             }}>
-              {/* Subtle glow */}
+
               <div style={{
                 position: "absolute", inset: 0,
                 background: "radial-gradient(circle at 20% 20%, rgba(59,130,246,0.07), transparent 60%)",
@@ -204,6 +245,7 @@ export default function AcademicsSection({ data }: Props) {
                     background: "linear-gradient(90deg, #3b82f6, #60a5fa)",
                     marginBottom: 12,
                   }} />
+
                   <h2 style={{
                     fontFamily: "var(--font-playfair), Georgia, serif",
                     fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
@@ -217,17 +259,6 @@ export default function AcademicsSection({ data }: Props) {
                   <p style={{ color: "#374151", lineHeight: 1.9, fontSize: "1.05rem", fontWeight: 300, marginBottom: 24 }}>
                     {data.methodology}
                   </p>
-                  <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                    {["Student-Led", "Research-Based", "Tech-Integrated"].map((tag) => (
-                      <span key={tag} style={{
-                        fontSize: "0.75rem", fontWeight: 600, color: "#f97316",
-                        background: "#fff7ed", border: "1px solid #fed7aa",
-                        borderRadius: 100, padding: "6px 16px", letterSpacing: "0.05em",
-                      }}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
@@ -247,6 +278,7 @@ export default function AcademicsSection({ data }: Props) {
               }}>
                 Why Choose Us
               </div>
+
               <h2 style={{
                 fontFamily: "var(--font-playfair), Georgia, serif",
                 fontSize: "clamp(2rem, 5vw, 3.5rem)",
@@ -278,6 +310,7 @@ export default function AcademicsSection({ data }: Props) {
                   }}>
                     {String(i + 1).padStart(2, "0")}
                   </div>
+
                   <p style={{ color: "#374151", fontSize: "0.9rem", lineHeight: 1.7, fontWeight: 400 }}>
                     {item}
                   </p>
@@ -291,30 +324,12 @@ export default function AcademicsSection({ data }: Props) {
   );
 }
 
-// ─── Sub-component with hover state ──────────────────────────────────────────
-
 function DeptCard({ dept, icon }: { dept: Department; icon: string }) {
   return (
-    <div
-      style={{
-        background: "#ffffff", borderRadius: 16, padding: 22,
-        border: "1px solid #e5e7eb", position: "relative",
-        transition: "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
-        cursor: "default",
-      }}
-      onMouseEnter={(e) => {
-        const el = e.currentTarget as HTMLDivElement;
-        el.style.transform = "translateY(-4px)";
-        el.style.boxShadow = "0 12px 28px rgba(2,6,23,0.08)";
-        el.style.borderColor = "#dbeafe";
-      }}
-      onMouseLeave={(e) => {
-        const el = e.currentTarget as HTMLDivElement;
-        el.style.transform = "translateY(0)";
-        el.style.boxShadow = "none";
-        el.style.borderColor = "#e5e7eb";
-      }}
-    >
+    <div style={{
+      background: "#ffffff", borderRadius: 16, padding: 22,
+      border: "1px solid #e5e7eb",
+    }}>
       <div style={{
         fontSize: "1.4rem", marginBottom: 10,
         width: 42, height: 42, borderRadius: 10,
@@ -323,12 +338,14 @@ function DeptCard({ dept, icon }: { dept: Department; icon: string }) {
       }}>
         {icon}
       </div>
+
       <h3 style={{
         fontFamily: "var(--font-playfair), Georgia, serif",
         fontSize: "1.3rem", fontWeight: 600, color: "#0c2340", marginBottom: 8,
       }}>
         {dept.name}
       </h3>
+
       <p style={{ color: "#64748b", fontSize: "0.875rem", lineHeight: 1.7, fontWeight: 300 }}>
         {dept.description}
       </p>
