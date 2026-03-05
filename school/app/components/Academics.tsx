@@ -63,6 +63,31 @@ export default function AcademicsSection({ data }: Props) {
             font-size:0.6rem !important;
           }
 
+          .methodology-section{
+            padding:0 20px 60px !important;
+          }
+
+          .methodology-card{
+          padding:28px 20px !important;
+          }
+
+          .methodology-flex{
+          flex-direction:column !important;
+          gap:18px !important;
+          }
+
+          .methodology-title{
+          width:100% !important;
+          }
+
+          .methodology-text{
+          min-width:0 !important;
+          }
+
+          .methodology-text p{
+          font-size:0.6rem !important;
+          }
+
         }
 
       `}</style>
@@ -221,42 +246,81 @@ export default function AcademicsSection({ data }: Props) {
 
       {/* ===== Teaching Methodology ===== */}
       {data.methodology && (
-        <div style={{ padding: "0 64px 80px" }}>
+        <div className="methodology-section" style={{ padding: "0 64px 80px" }}>
           <div style={{ maxWidth: 1152, margin: "0 auto" }}>
-            <div style={{
-              position: "relative",
-              background: "#ffffff",
-              borderRadius: 20,
-              border: "1px solid #e5e7eb",
-              overflow: "hidden",
-              padding: "48px 56px",
-            }}>
+            <div
+              className="methodology-card"
+              style={{
+                position: "relative",
+                background: "#ffffff",
+                borderRadius: 20,
+                border: "1px solid #e5e7eb",
+                overflow: "hidden",
+                padding: "48px 56px",
+              }}
+            >
 
-              <div style={{
-                position: "absolute", inset: 0,
-                background: "radial-gradient(circle at 20% 20%, rgba(59,130,246,0.07), transparent 60%)",
-                pointerEvents: "none",
-              }} />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background:
+                    "radial-gradient(circle at 20% 20%, rgba(59,130,246,0.07), transparent 60%)",
+                  pointerEvents: "none",
+                }}
+              />
 
-              <div style={{ position: "relative", zIndex: 1, display: "flex", flexWrap: "wrap", gap: 40, alignItems: "flex-start" }}>
-                <div style={{ flexShrink: 0, width: 240 }}>
-                  <div style={{
-                    width: 54, height: 4, borderRadius: 999,
-                    background: "linear-gradient(90deg, #3b82f6, #60a5fa)",
-                    marginBottom: 12,
-                  }} />
+              <div
+                className="methodology-flex"
+                style={{
+                  position: "relative",
+                  zIndex: 1,
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 40,
+                  alignItems: "flex-start",
+                }}
+              >
+                <div
+                  className="methodology-title"
+                  style={{ flexShrink: 0, width: 240 }}
+                >
+                  <div
+                    style={{
+                      width: 54,
+                      height: 4,
+                      borderRadius: 999,
+                      background: "linear-gradient(90deg, #3b82f6, #60a5fa)",
+                      marginBottom: 12,
+                    }}
+                  />
 
-                  <h2 style={{
-                    fontFamily: "var(--font-playfair), Georgia, serif",
-                    fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-                    fontWeight: 700, color: "#0c2340", lineHeight: 1.15,
-                  }}>
+                  <h2
+                    style={{
+                      fontFamily: "var(--font-playfair), Georgia, serif",
+                      fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                      fontWeight: 700,
+                      color: "#0c2340",
+                      lineHeight: 1.15,
+                    }}
+                  >
                     Teaching Methodology
                   </h2>
                 </div>
 
-                <div style={{ flex: 1, minWidth: 260, paddingTop: 8 }}>
-                  <p style={{ color: "#374151", lineHeight: 1.9, fontSize: "1.05rem", fontWeight: 300, marginBottom: 24 }}>
+                <div
+                  className="methodology-text"
+                  style={{ flex: 1, minWidth: 260, paddingTop: 8 }}
+                >
+                  <p
+                    style={{
+                      color: "#374151",
+                      lineHeight: 1.9,
+                      fontSize: "1.05rem",
+                      fontWeight: 300,
+                      marginBottom: 24,
+                    }}
+                  >
                     {data.methodology}
                   </p>
                 </div>
