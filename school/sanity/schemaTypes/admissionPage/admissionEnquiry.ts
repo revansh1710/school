@@ -48,7 +48,7 @@ export default defineType({
       title: "Status",
       type: "string",
       options: {
-        list: ["new", "contacted", "converted"],
+        list: ["ENQUIRY", "DOCUMENTS", "INTERVIEW","ACCEPTED","REJECTED","ENROLLED"],
       },
       initialValue: "new",
     }),

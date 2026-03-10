@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import {sendWelcomeMail} from '../../lib/utils/mailService'
+import { sendWelcomeMail } from '../../lib/utils/mailService'
 export default function AdmissionsEnquiryForm() {
   const [form, setForm] = useState({
     parentName: "",
@@ -423,10 +423,9 @@ export default function AdmissionsEnquiryForm() {
                     >
                       <option value="" disabled>Select a grade</option>
                       {["Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5",
-                        "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10",
-                        "Grade 11", "Grade 12"].map((g) => (
-                        <option key={g} value={g}>{g}</option>
-                      ))}
+                        "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10"].map((g) => (
+                          <option key={g} value={g}>{g}</option>
+                        ))}
                     </select>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "es2023",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -11,6 +11,7 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
+    "ignoreDeprecations": "6.0",
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,

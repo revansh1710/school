@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User{
+  id            String        @id @default(uuid())
+  email         String        @unique
+  parentName    String?
+  role          Role          @default(PARENT)
+  status        UserStatus    @default(TEMPORARY)
+  createdAt     DateTime      @default(now())
+
+
+  sessions      Session[]
+  tokens        MagicToken[]
+  students      ParentStudent[]
+}
+
+model Student{
+  id                  String         @id @default(uuid())
+  firstName           String
+  lastName            String
+  admissionStatus     AdmissionStatus @default(ENQUIRY)
+  createdAt           DateTime @default(now())
+
+  parents             ParentStudent[]
+}
+
+model ParentStudent {
+   id                  String         @id @default(uuid())
+   parentId            String
+   studentId           String
+
+   parent              User         @relation(fields:[parentId],references:[id])
+   student             Student     @relation(fields:[studentId],references:[id])
+   createdAt           DateTime @default(now())
+}
+
+model MagicToken{
+   id                  String         @id @default(uuid())
+   tokenHash           String
+   userId              String
+   expiresAt           DateTime
+   used                Boolean        @default(false)
+   user                User        @relation(fields: [userId], references: [id])
+   
+   createdAt           DateTime       @default(now())
+}
+
+model Session{
+  id                   String         @id
+  userId               String
+  expiresAt            DateTime
+  createdAt            DateTime       @default(now())
+
+  user                 User        @relation(fields: [userId], references: [id])
+}
+
+enum Role{
+  PARENT
+  ADMIN
+}
+
+enum UserStatus{
+  TEMPORARY
+  ACTIVE
+  DISABLED
+}
+
+enum AdmissionStatus {
+  ENQUIRY
+  DOCUMENTS
+  INTERVIEW
+  ACCEPTED
+  REJECTED
+  ENROLLED
+}
