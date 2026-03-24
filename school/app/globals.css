@@ -17,6 +17,17 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@theme {
+  /* Define the custom animation utility name */
+  --animate-scroll-left: scroll-left 60s linear infinite;
+
+  /* Define the movement steps */
+  @keyframes scroll-left {
+    from { transform: translateX(10%); }
+    to { transform: translateX(-10%); }
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

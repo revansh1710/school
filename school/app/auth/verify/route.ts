@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server"
-import prisma from "../../../lib/prisma"
+import prisma from "../../lib/prisma"
 import crypto from "crypto"
 
 export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url)
   const token = searchParams.get("token")
-
+  console.log(token)
   if (!token) {
     return NextResponse.json({ error: "Invalid token" }, { status: 400 })
   }
@@ -33,13 +33,13 @@ export async function GET(req: Request) {
   // create session
   const session = await prisma.session.create({
     data: {
-      id:crypto.randomUUID(),
+      id: crypto.randomUUID(),
       userId: tokenRecord.userId,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     }
   })
 
-  // ✅ IMPORTANT: use NextResponse
+  // ✅ THIS IS THE FIX
   const response = NextResponse.redirect(new URL("/dashboard", req.url))
 
   response.cookies.set("session", session.id, {

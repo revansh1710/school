@@ -59,7 +59,7 @@ model MagicToken{
 }
 
 model Session{
-  id                   String         @id
+  id                   String         @id   @default(uuid())
   userId               String
   expiresAt            DateTime
   createdAt            DateTime       @default(now())

@@ -45,12 +45,52 @@ export default defineType({
     }),
     defineField({
       name: "status",
-      title: "Status",
       type: "string",
       options: {
-        list: ["ENQUIRY", "DOCUMENTS", "INTERVIEW","ACCEPTED","REJECTED","ENROLLED"],
-      },
-      initialValue: "new",
+        list: [
+          { title: "New", value: "new" },
+          { title: "Contacted", value: "contacted" },
+          { title: "Documents Submitted", value: "documents_submitted" },
+          { title: "Interview Scheduled", value: "interview_scheduled" },
+          { title: "Accepted", value: "accepted" },
+          { title: "Rejected", value: "rejected" },
+          { title: "Withdrawn", value: "withdrawn" }
+        ]
+      }
     }),
+    {
+      name: "documents",
+      type: "object",
+      fields: [
+        { name: "birthCertificate", type: "file" },
+        { name: "previousMarksheet", type: "file" },
+        { name: "transferCertificate", type: "file" }
+      ]
+    },
+    {
+      name: "documentsStatus",
+      type: "string",
+      options: {
+        list: [
+          { title: "Pending", value: "pending" },
+          { title: "Submitted", value: "submitted" },
+          { title: "Verified", value: "verified" }
+        ]
+      }
+    },
+    {
+      name: "gradeCategory",
+      type: "string"
+    },
+    defineField({
+      name: "requiredDocuments",
+      title: "Required Documents",
+      type: "array",
+      of: [{ type: "string" }]
+    }),
+    {
+      name: "dateOfBirth",
+      type: "date"
+    }
   ],
 })

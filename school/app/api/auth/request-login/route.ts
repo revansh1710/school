@@ -1,8 +1,12 @@
 import prisma from "../../../lib/prisma"
-import crypto from "node:crypto"
+import crypto from "crypto"
+import { client as sanityClient } from "@/sanity/lib/client"
+import { sendMagicLoginMail } from "../../../lib/utils/mailService"
 
 export async function POST(req: Request) {
-  const { email } = await req.json()
+
+  const body = await req.json()
+  const email = body.email?.toLowerCase()
 
   if (!email) {
     return Response.json(
@@ -11,16 +15,42 @@ export async function POST(req: Request) {
     )
   }
 
-  const user = await prisma.user.findUnique({
+  // 1. Check Sanity (source of truth)
+
+  const enquiry = await sanityClient.fetch(
+    `*[_type == "admissionEnquiry" && email == $email][0]`,
+    { email }
+  )
+
+  if (!enquiry) {
+    return Response.json(
+      { error: "Email not registered with admissions" },
+      { status: 404 }
+    )
+  }
+
+  // 2. Ensure auth user exists
+
+  let user = await prisma.user.findUnique({
     where: { email }
   })
 
   if (!user) {
-    return Response.json(
-      { error: "User not found" },
-      { status: 404 }
-    )
+    user = await prisma.user.create({
+      data: {
+        email,
+        parentName: enquiry.parentName
+      }
+    })
   }
+
+  // 3. Remove previous tokens
+
+  await prisma.magicToken.deleteMany({
+    where: { userId: user.id }
+  })
+
+  // 4. Generate token
 
   const token = crypto.randomBytes(32).toString("hex")
 
@@ -37,10 +67,18 @@ export async function POST(req: Request) {
     }
   })
 
+  // 5. Send login email
+
   const loginLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`
+
+  await sendMagicLoginMail({
+    to: user.email,
+    name: user.parentName || "Parent",
+    loginLink
+  })
 
   return Response.json({
     success: true,
-    loginLink
+    message: "Login link sent"
   })
 }

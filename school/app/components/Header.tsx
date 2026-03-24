@@ -50,11 +50,11 @@ export default function Header() {
                 <div className="hidden md:flex items-center gap-3 flex-1 justify-end">
 
                     <a
-                        href="/dashboard"
+                        href="/auth/login"
                         className="px-4 py-2 rounded-lg bg-transparent border-b-emerald-700
             text-white font-semibold transition text-sm shadow-md"
                     >
-                        Dashboard
+                        Login
                     </a>
                 </div>
 
@@ -98,11 +98,11 @@ export default function Header() {
                     {/* Mobile buttons */}
                     <div className='flex items-center justify-center'>
                         <Link
-                            href="/dashboard"
+                            href="/auth/login"
                             onClick={() => setIsOpen(false)}
                             className=" bg-violet-400  text-white font-medium text-center"
                         >
-                            Dashboard
+                            login
                         </Link>
                     </div>
                 </div>

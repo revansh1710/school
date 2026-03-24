@@ -69,4 +69,58 @@ const sendWelcomeMail = async ({ to, name }: { to: string; name: string }) => {
   return info
 }
 
-export { sendWelcomeMail }
+const sendMagicLoginMail = async ({
+  to,
+  name,
+  loginLink
+}: {
+  to: string
+  name: string
+  loginLink: string
+}) => {
+
+  const info = await transporter.sendMail({
+    from: `"School" <${process.env.SMTP_USER}>`,
+    to,
+    subject: "Access your Parent Dashboard",
+
+    html: `
+      <div style="font-family:Segoe UI, Arial; background:#f5f7fa; padding:32px 16px;">
+        <div style="max-width:600px;margin:auto;background:#fff;border-radius:8px;border:1px solid #e5e7eb;">
+          
+          <div style="background:#1e3a5f;padding:24px;color:#fff;text-align:center;">
+            <h1 style="margin:0;font-size:22px;">School Parent Portal</h1>
+          </div>
+
+          <div style="padding:28px 24px;color:#374151;">
+            <h2 style="margin-top:0;font-size:18px;">Hello ${name},</h2>
+
+            <p style="line-height:1.7;font-size:14px;">
+              Click the button below to securely access your parent dashboard.
+            </p>
+
+            <div style="text-align:center;margin:30px 0;">
+              <a href="${loginLink}"
+                 style="background:#2563eb;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;font-size:14px;">
+                 Access Dashboard
+              </a>
+            </div>
+
+            <p style="font-size:13px;color:#6b7280;">
+              This link will expire in 15 minutes for security reasons.
+            </p>
+          </div>
+
+          <div style="background:#f9fafb;padding:16px;text-align:center;font-size:12px;color:#6b7280;border-top:1px solid #e5e7eb;">
+            © ${new Date().getFullYear()} School
+          </div>
+
+        </div>
+      </div>
+    `,
+  })
+
+  return info
+}
+
+export { sendWelcomeMail,sendMagicLoginMail }
