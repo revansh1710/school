@@ -8,14 +8,11 @@ function mapGradeToCategory(grade: string) {
 
   const g = grade.toLowerCase().trim()
 
-  // ✅ PRE-PRIMARY GROUP
   const prePrimaryGrades = ["nursery", "lkg", "ukg", "pre", "pre-primary"]
 
   if (prePrimaryGrades.some(p => g.includes(p))) {
     return "pre_primary"
   }
-
-  // ✅ EXTRACT NUMBER (for Grade 1–10)
   const match = g.match(/\d+/)
   const num = match ? parseInt(match[0]) : null
 
@@ -39,7 +36,6 @@ export async function POST(req: Request) {
 
     const gradeCategory = mapGradeToCategory(body.grade)
 
-    // ✅ NEW: derive required documents ONCE
     const requiredDocuments =
       admissionConfig[gradeCategory as keyof typeof admissionConfig]
 
@@ -60,7 +56,6 @@ export async function POST(req: Request) {
 
       gradeCategory,
 
-      // ✅ STORE THIS (MOST IMPORTANT CHANGE)
       requiredDocuments,
 
       message: body.message,

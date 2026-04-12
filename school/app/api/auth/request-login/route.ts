@@ -15,8 +15,6 @@ export async function POST(req: Request) {
     )
   }
 
-  // 1. Check Sanity (source of truth)
-
   const enquiry = await sanityClient.fetch(
     `*[_type == "admissionEnquiry" && email == $email][0]`,
     { email }
@@ -29,7 +27,6 @@ export async function POST(req: Request) {
     )
   }
 
-  // 2. Ensure auth user exists
 
   let user = await prisma.user.findUnique({
     where: { email }
@@ -44,13 +41,10 @@ export async function POST(req: Request) {
     })
   }
 
-  // 3. Remove previous tokens
-
   await prisma.magicToken.deleteMany({
     where: { userId: user.id }
   })
 
-  // 4. Generate token
 
   const token = crypto.randomBytes(32).toString("hex")
 
@@ -67,7 +61,6 @@ export async function POST(req: Request) {
     }
   })
 
-  // 5. Send login email
 
   const loginLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`
 

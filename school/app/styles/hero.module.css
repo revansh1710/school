@@ -1,0 +1,85 @@
+.hero {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    background:azure ;
+    font-family: 'Inter', sans-serif;
+}
+
+.heroCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+    max-width: 800px;
+    padding: 20px;
+    color:aqua;
+}
+
+.heroContent h1 {
+    font-family: 'Luckiest Guy', cursive; /* Make sure this is imported in your global layout/document */
+    font-size: 5rem;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.highlight {
+    color: #219EBC;
+}
+
+.heroContent p {
+    font-size: 1.5rem;
+    margin: 20px 0 40px;
+    font-weight: 400;
+    color: rgba(52, 58, 64, 0.8);
+}
+
+.ctaBtn {
+    pointer-events: auto;
+    display: inline-block;
+    padding: 18px 50px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    background-color: #FFB703;
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.ctaBtn:hover {
+    background-color: #f7a800;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .heroContent h1 {
+        font-size: 3rem;
+    }
+    .heroContent p {
+        font-size: 1.2rem;
+    }
+    .ctaBtn {
+        font-size: 1.2rem;
+        padding: 15px 40px;
+    }
+}

@@ -24,13 +24,11 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Token expired" }, { status: 400 })
   }
 
-  // mark used
   await prisma.magicToken.update({
     where: { id: tokenRecord.id },
     data: { used: true }
   })
 
-  // create session
   const session = await prisma.session.create({
     data: {
       id:crypto.randomUUID(),
@@ -39,12 +37,11 @@ export async function GET(req: Request) {
     }
   })
 
-  // ✅ IMPORTANT: use NextResponse
   const response = NextResponse.redirect(new URL("/dashboard", req.url))
 
   response.cookies.set("session", session.id, {
     httpOnly: true,
-    secure: false, // true in production
+    secure: false, 
     path: "/",
     maxAge: 60 * 60 * 24 * 7
   })

@@ -3,7 +3,6 @@ import { client } from "../../../sanity/lib/client"
 
 export async function GET() {
   try {
-    // ✅ 1. Validate session
     const user = await getCurrentUser()
 
     if (!user) {
@@ -13,7 +12,6 @@ export async function GET() {
       )
     }
 
-    // ✅ 2. Fetch enquiry from Sanity
     const enquiry = await client.fetch(
       `*[_type == "admissionEnquiry" && email == $email][0]{
         _id,
@@ -30,7 +28,6 @@ export async function GET() {
       { email: user.email }
     )
 
-    // ❌ No enquiry found
     if (!enquiry) {
       return Response.json(
         { error: "No admission data found" },
@@ -38,20 +35,16 @@ export async function GET() {
       )
     }
 
-    // ✅ 3. Normalize data (VERY IMPORTANT)
     const requiredDocs = enquiry.requiredDocuments || []
 
     const uploadedDocs = enquiry.documents || {}
 
-    // Count uploaded documents
     const uploadedCount = Object.keys(uploadedDocs).length
 
-    // Check if all docs uploaded
     const allDocsUploaded =
       requiredDocs.length > 0 &&
       uploadedCount === requiredDocs.length
 
-    // ✅ 4. Return clean dashboard data
     return Response.json({
       parentName: enquiry.parentName,
       studentName: enquiry.studentName,

@@ -28,8 +28,7 @@ export default async function DashboardPage() {
   })
 
   const data = await res.json()
-
-  console.log("DASHBOARD DATA:", data)
+  console.log(data.status)
 
   return (
     <div>
