@@ -44,7 +44,7 @@ export default function Header() {
 
                     <a
                         href="/auth/login"
-                        className="px-4 py-2 rounded-lg bg-transparent border-b-emerald-700
+                        className="px-4 py-2 rounded-lg bg-transparent
              sm:text-xl font-bold tracking-wide 
             bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent  transition text-sm shadow-md"
                     >

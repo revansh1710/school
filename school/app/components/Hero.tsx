@@ -40,7 +40,8 @@ const HeroCanvas: React.FC = () => {
             { icon: '🏏', name: 'Sports', color: '#219EBC' },
             { icon: '🎨', name: 'Art', color: '#E94F37' },
             { icon: '🧪', name: 'Science', color: '#8AC926' },
-            { icon: '📐', name: 'Math', color: '#6A4C93' }
+            { icon: '📐', name: 'Math', color: '#6A4C93' },
+             { icon: '📷', name: 'Phtography', color: '#6A4C93' }
         ];
 
         const resize = () => {
@@ -247,9 +248,6 @@ const HeroCanvas: React.FC = () => {
                 <h1 className="text-4xl sm:text-6xl font-extrabold bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">
                     Welcome to School
                 </h1>
-                <p className="mt-6 max-w-2xl mx-auto text-lg text-gray-300 leading-relaxed">
-                    LEARN GROW AND ACHIEVE YOUR DREAMS
-                </p>
             </div>
         </section>
     );

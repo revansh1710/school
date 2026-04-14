@@ -7,7 +7,9 @@
     justify-content: center;
     text-align: center;
     overflow: hidden;
-    background:azure ;
+    background-image: url('/images/Hero1.png');
+    background-position: inherit;
+    background-size: 1250px;
     font-family: 'Inter', sans-serif;
 }
 

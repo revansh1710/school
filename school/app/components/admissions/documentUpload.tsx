@@ -63,7 +63,6 @@ export default function DocumentUpload({ requiredDocs = [] }: props) { // ✅ de
     const uploadedCount = Object.keys(preview).length
     const totalCount = requiredDocs.length || 1 // ✅ prevent division by 0
     const allDone = requiredDocs.length > 0 && uploadedCount === requiredDocs.length
-    console.log(requiredDocs)
     return (
         <>
             <style>{`

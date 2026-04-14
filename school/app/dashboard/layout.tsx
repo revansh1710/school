@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import DashboardHeader from "../components/layout/DashboardHeader"
 import DashboardFooter from "../components/layout/DashboardFooter"
 import DashboardSidebar from "../components/layout/DashboardSidebar"
+import {cookies} from 'next/headers'
 export default async function DashboardLayout({
   children,
 }: {
@@ -14,6 +15,23 @@ export default async function DashboardLayout({
   if (!user) {
     redirect("/auth/login")
   }
+
+  const cookieStore = await cookies()
+  
+    const cookieHeader = cookieStore
+      .getAll()
+      .map(c => `${c.name}=${c.value}`)
+      .join("; ")
+  
+    // ✅ PASS COOKIES
+    const res = await fetch("http://localhost:3000/api/dashboard", {
+      cache: "no-store",
+      headers: {
+        Cookie: cookieHeader
+      }
+    })
+  
+    const data = await res.json()
   
 
   return (
@@ -24,7 +42,7 @@ export default async function DashboardLayout({
       background: "#f9fafb"
     }}>
 
-      <DashboardHeader parentName={user.parentName ?? undefined} />
+      <DashboardHeader parentName={user.parentName ?? undefined} status={data.status} />
 
       {/* MAIN AREA */}
       <div style={{

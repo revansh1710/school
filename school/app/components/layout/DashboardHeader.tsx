@@ -1,15 +1,44 @@
 'use client'
 
 import { useRouter } from "next/navigation"
-
-export default function DashboardHeader({ parentName }: { parentName?: string }) {
+import { useState } from 'react'
+interface DashboardHeaderProps{
+    parentName:string | undefined,
+    status:string
+}
+export default function DashboardHeader({ parentName, status }:DashboardHeaderProps) {
 
     const router = useRouter();
+    const [isWithdrawing, setIsWithdrawing] = useState(false)
+    const normalizedStatus = status?.trim().toLowerCase()
     const handleLogout = async () => {
         await fetch("/api/auth/logout", {
             method: "POST"
         })
         router.push("/auth/login")
+    }
+
+    const handleWithdraw = async () => {
+        if (!window.confirm("Are you sure you want to withdraw application?")) {
+            return
+        }
+
+        setIsWithdrawing(true)
+        try {
+            const res = await fetch("/api/admissions/withdraw", {
+                method: "POST",
+            })
+            if (res.ok) {
+                router.push("/auth/login")
+            } else {
+                alert("Failed to withdraw application. Please try again.")
+            }
+        } catch (error) {
+            console.error(error)
+            alert("Failed to withdraw application.")
+        } finally {
+            setIsWithdrawing(false)
+        }
     }
 
     return (
@@ -227,7 +256,7 @@ export default function DashboardHeader({ parentName }: { parentName?: string })
             }}>
 
                 {/* Floating school particles */}
-                {["📚","✏️","🎓","📐","🔬","⭐"].map((p, i) => (
+                {["📚", "✏️", "🎓", "📐", "🔬", "⭐"].map((p, i) => (
                     <span key={i} className="hdr-particle" style={{
                         left: `${8 + i * 15}%`,
                         top: "10%",
@@ -307,6 +336,16 @@ export default function DashboardHeader({ parentName }: { parentName?: string })
 
                         <div className="v-sep" />
 
+                        {normalizedStatus !== "withdrawn" && normalizedStatus !== "enrolled" && (
+                            <button
+                                onClick={handleWithdraw}
+                                className="logout-btn"
+                                disabled={isWithdrawing}
+                            >
+                                {isWithdrawing ? "Withdrawing..." : "Withdraw Application"}
+                            </button>
+                        )
+                        }
                         {/* Logout */}
                         <button onClick={handleLogout} className="logout-btn">
                             Logout

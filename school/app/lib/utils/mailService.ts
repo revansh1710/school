@@ -765,6 +765,7 @@ const getStatusContent = (status: string, parentName: string) => {
         message: `Dear ${parentName},<br/><br/>
         Thank you for your interest in our institution.<br/>
         After careful consideration, we regret to inform you that your application was not selected.<br/><br/>
+        If the application is rejected the account and related content will be deleted.<br/><br/>
         We sincerely wish you the very best for the future.`,
       }
 

@@ -76,7 +76,6 @@ export async function POST(req: Request) {
     { id: enquiry._id }
   )
 
-  console.log("UPDATED STATUS:", updated.status)
 
   return Response.json({ success: true })
 }

@@ -22,6 +22,7 @@ const stampByStatus: Record<string, string> = {
 export default function AdmissionStatus({ status }: { status: string }) {
   const [open, setOpen] = useState(false)
 
+
   const normalizedStatus = status?.trim().toLowerCase()
   const config =
     statusConfig[normalizedStatus as keyof typeof statusConfig] ||
@@ -117,14 +118,17 @@ export default function AdmissionStatus({ status }: { status: string }) {
         }}
       />
 
-      {/* Toggle hint */}
-      <button
-        onClick={() => setOpen((v) => !v)}
-        style={styles.hint}
-        aria-label={open ? "Close book" : "Open book"}
-      >
-        {open ? "Close" : "Open the letter"}
-      </button>
+      {/* Action Buttons */}
+      <div style={styles.actionBlock}>
+        {/* Toggle hint */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          style={styles.hintBtn}
+          aria-label={open ? "Close book" : "Open book"}
+        >
+          {open ? "Close" : "Open the letter"}
+        </button>
+      </div>
     </div>
   )
 }
@@ -319,14 +323,10 @@ const styles: Record<string, React.CSSProperties> = {
     background: "radial-gradient(ellipse, rgba(0,0,0,0.18) 0%, transparent 70%)",
     marginTop:  -4,
   },
-  hint: {
-    marginTop:    20,
-    fontSize:     13,
-    color:        "var(--color-text-secondary, #666)",
-    background:   "none",
-    border:       "none",
-    cursor:       "pointer",
-    fontFamily:   "inherit",
-    padding:      0,
-  },
+  actionBlock: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+  }
 }
