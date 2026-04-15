@@ -8,8 +8,7 @@
     text-align: center;
     overflow: hidden;
     background-image: url('/images/Hero1.png');
-    background-position: inherit;
-    background-size: 1250px;
+    background-size: cover;
     font-family: 'Inter', sans-serif;
 }
 

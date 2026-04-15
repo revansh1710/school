@@ -3,18 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-export default function Header() {
+export default function AdmissonHeader() {
     const [isOpen, setIsOpen] = useState(false);
     const [doorsOpen, setDoorsOpen] = useState(false);
     const [contentVisible, setContentVisible] = useState(false);
 
     const navLinks = [
-        { label: 'About',      href: '#about',      icon: '🏛️' },
-        { label: 'Academics',  href: '#academics',  icon: '📚' },
-        { label: 'Admissions', href: '/admissions', icon: '🎓' },
-        { label: 'Gallery',    href: '/gallery',    icon: '🖼️' },
-        { label: 'Contact',    href: '#contact',    icon: '📬' },
-        { label: 'Studio',     href: '/studio',     icon: '🎨' },
+        { label: 'Gallery',      href: '/gallery',      icon: '🖼️' },
     ];
 
     const openMenu = () => {
@@ -50,7 +45,7 @@ export default function Header() {
                             className="text-lg sm:text-xl font-bold tracking-wide
                                 bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent"
                         >
-                        School
+                            Home
                         </Link>
                     </div>
 
