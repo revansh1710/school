@@ -243,12 +243,6 @@ const HeroCanvas: React.FC = () => {
     return (
         <section className={styles.hero}>
             <canvas ref={canvasRef} className={styles.heroCanvas}></canvas>
-
-            <div className={styles.heroContent}>
-                <h1 className="text-4xl sm:text-6xl font-extrabold bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">
-                    Welcome to School
-                </h1>
-            </div>
         </section>
     );
 };
