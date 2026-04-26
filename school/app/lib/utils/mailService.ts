@@ -745,8 +745,17 @@ const getStatusContent = (status: string, parentName: string) => {
         subject: "🎓 Interview Scheduled",
         title: "INTERVIEW SCHEDULED",
         message: `Dear ${parentName},<br/><br/>
-        Your interview has been scheduled.<br/>
-        Please log in to your dashboard to view the date, time, and further instructions.`,
+        Your requested interview time has been confirmed.<br/>
+        Please log in to your dashboard to view the full details and instructions for the interview.`,
+      }
+      
+    case "interview_schedule_rejected":
+      return {
+        subject: "Interview Schedule Update",
+        title: "INTERVIEW RESCHEDULE REQUIRED",
+        message: `Dear ${parentName},<br/><br/>
+        The interview time you requested could not be accommodated.<br/>
+        Please log in to your dashboard to select a different available time slot.`,
       }
 
     case "accepted":

@@ -279,6 +279,7 @@ export default function Footer() {
                 <a href="#">Facebook</a>
                 <a href="#">Instagram</a>
                 <a href="#">Twitter</a>
+                
               </div>
             </div>
 
@@ -286,10 +287,11 @@ export default function Footer() {
             <div>
               <p className="footer-col-title">Quick Links</p>
               <ul className="footer-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#academics">Academics</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#academics">Academics</a></li>
                 <li><a href="/admissions">Admissions</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="/#contact">Contact</a></li>
+                <li><a href="/gallery">Gallery</a></li>
               </ul>
             </div>
 

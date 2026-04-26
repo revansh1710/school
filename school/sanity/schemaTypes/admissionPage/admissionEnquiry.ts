@@ -91,6 +91,23 @@ export default defineType({
     {
       name: "dateOfBirth",
       type: "date"
-    }
+    },
+    defineField({
+      name: "interviewDate",
+      title: "Requested/Scheduled Interview Date",
+      type: "datetime"
+    }),
+    defineField({
+      name: "interviewApprovalStatus",
+      title: "Interview Approval Status",
+      type: "string",
+      options: {
+        list: [
+          { title: "Pending Request", value: "pending" },
+          { title: "Approved", value: "approved" },
+          { title: "Rejected", value: "rejected" }
+        ]
+      }
+    })
   ],
 })

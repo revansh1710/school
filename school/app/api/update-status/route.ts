@@ -8,10 +8,12 @@ export async function POST(req: Request) {
 
     const newStatus = body?.status
     const oldStatus = body?.previousStatus
+    const newApproval = body?.interviewApprovalStatus
+    const oldApproval = body?.previousInterviewApprovalStatus
     const email = body?.email
     const parentName = body?.parentName
 
-    if (!newStatus || newStatus === oldStatus) {
+    if ((!newStatus || newStatus === oldStatus) && (!newApproval || newApproval === oldApproval)) {
       return Response.json({ message: "No status change" })
     }
 
@@ -38,12 +40,48 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Send email update
-    await sendStatusUpdateMail({
-      to: email,
-      parentName,
-      status: newStatus
-    })
+    if (newStatus === "accepted" && email) {
+      const user = await prisma.user.findUnique({ where: { email } })
+      
+      if (user) {
+        const studentName = body?.studentName || "Unknown"
+        const nameParts = studentName.trim().split(" ")
+        const firstName = nameParts[0]
+        const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : ""
+
+        // Create student and the ParentStudent relation
+        await prisma.student.create({
+          data: {
+            firstName,
+            lastName,
+            admissionStatus: "ACCEPTED",
+            parents: {
+              create: {
+                parentId: user.id
+              }
+            }
+          }
+        })
+      }
+    }
+
+    // 3. Send email update based on main status change
+    if (newStatus && newStatus !== oldStatus) {
+      await sendStatusUpdateMail({
+        to: email,
+        parentName,
+        status: newStatus
+      })
+    }
+
+    // 4. Send email update based on interview approval status
+    if (newApproval && newApproval !== oldApproval) {
+      if (newApproval === 'approved') {
+         await sendStatusUpdateMail({ to: email, parentName, status: 'interview_scheduled' })
+      } else if (newApproval === 'rejected') {
+         await sendStatusUpdateMail({ to: email, parentName, status: 'interview_schedule_rejected' })
+      }
+    }
 
     return Response.json({ success: true })
   } catch (error) {

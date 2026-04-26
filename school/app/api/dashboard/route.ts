@@ -23,6 +23,8 @@ export async function GET() {
         requiredDocuments,
         documentsStatus,
         status,
+        interviewDate,
+        interviewApprovalStatus,
         documents
       }`,
       { email: user.email }
@@ -54,6 +56,8 @@ export async function GET() {
 
       status: enquiry.status  ?? "new",
       documentsStatus: enquiry.documentsStatus || "pending",
+      interviewDate: enquiry.interviewDate || null,
+      interviewApprovalStatus: enquiry.interviewApprovalStatus || "none",
       
       requiredDocuments: requiredDocs,
       uploadedDocuments: uploadedDocs,

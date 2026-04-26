@@ -28,14 +28,15 @@ export default async function DashboardPage() {
   })
 
   const data = await res.json()
-
+  console.log(data)
   return (
     <div>
-      <h1 className='text-amber-600 flex items-center justify-center'>
+      <h1 className='text-amber-600 flex items-center justify-center pt-8 text-2xl font-bold'>
         Welcome to Dashboard
       </h1>
 
       <AdmissionStatus status={data.status} />
+
     </div>
   )
 }

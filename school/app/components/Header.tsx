@@ -13,12 +13,11 @@ export default function Header({ user }: HeaderProps) {
     const [contentVisible, setContentVisible] = useState(false);
 
     const navLinks = [
-        { label: 'About', href: '#about', icon: '🏛️' },
-        { label: 'Academics', href: '#academics', icon: '📚' },
+        { label: 'About', href: '/#about', icon: '🏛️' },
+        { label: 'Academics', href: '/#academics', icon: '📚' },
         { label: 'Admissions', href: '/admissions', icon: '🎓' },
         { label: 'Gallery', href: '/gallery', icon: '🖼️' },
-        { label: 'Contact', href: '#contact', icon: '📬' },
-        { label: 'Studio', href: '/studio', icon: '🎨' },
+        { label: 'Contact', href: '/#contact', icon: '📬' },
     ];
 
     const openMenu = () => {
@@ -81,8 +80,9 @@ export default function Header({ user }: HeaderProps) {
                     cursor: pointer;
                     text-decoration: none;
                     animation: rollIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                    transition: transform 0.2s ease;
                     flex-shrink: 0;
+                    background: #e63946;
                 }
                 .pokeball-avatar:hover  { transform: scale(1.1) !important; }
                 .pokeball-avatar:active { transform: scale(0.95) !important; }
@@ -112,7 +112,7 @@ export default function Header({ user }: HeaderProps) {
                     position: absolute; top: 50%; left: 50%;
                     transform: translate(-50%, -50%);
                     width: 11px; height: 11px; border-radius: 50%;
-                    background: #fff; border: 2.5px solid #1a1a1a; z-index: 4;
+                    background: #fff; border: 2.5px solid #1a1a1a; z-index: 0;
                 }
                 .pb-button::after {
                     content: ''; position: absolute; inset: 2px;
@@ -120,18 +120,19 @@ export default function Header({ user }: HeaderProps) {
                 }
                 .pb-initials {
                     position: absolute; z-index: 10;
-                    color: #fff; font-size: 13px; font-weight: 600;
+                    color: #ffffff; font-size: 12px; font-weight: 700;
                     letter-spacing: 0.5px;
-                    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+                    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
                     animation: revealInitials 0.4s ease-out 1.1s both;
                     opacity: 0;
                 }
-                .pb-base {
+              .pb-base {
                     position: absolute;
                     inset: 0;
-                    background: radial-gradient(circle at 35% 35%, #ffe066, #f5c400 50%, #c8960c 100%);
                     z-index: 0;
-                }
+                    /* Red outer + black inner — classic pokeball face */
+                    background: radial-gradient(circle at 50% 50%, #111 32%, #e63946 34%);
+                    }
 
                 /* Mobile pokeball — slightly smaller */
                 .pokeball-avatar-mobile {
@@ -149,7 +150,8 @@ export default function Header({ user }: HeaderProps) {
                 }
             `}</style>
 
-            <header className="fixed top-0 left-0 w-full h-12 z-50 bg-amber-100" >
+            <header className="fixed top-0 left-0 w-full h-12 z-50 bg-transparent
+            " >
                 <nav className="relative mx-auto max-w-7xl px-6 h-full flex items-center">
 
                     {/* Logo */}
@@ -157,7 +159,7 @@ export default function Header({ user }: HeaderProps) {
                         <Link
                             href="/"
                             className="text-lg sm:text-xl font-bold tracking-wide
-                                bg-linear-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent"
+                                bg-linear-to-r from-green-500 to-olive-900 bg-clip-text text-transparent"
                         >
                             School
                         </Link>
