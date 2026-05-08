@@ -11,10 +11,15 @@ export async function POST(req: Request) {
   }
 
   const formData = await req.formData()
+  const enquiryId = formData.get("enquiryId") as string
+
+  if (!enquiryId) {
+    return Response.json({ error: "enquiryId is required" }, { status: 400 })
+  }
 
   const enquiry = await client.fetch(
-    `*[_type == "admissionEnquiry" && email == $email][0]`,
-    { email: user.email }
+    `*[_type == "admissionEnquiry" && email == $email && _id == $enquiryId][0]`,
+    { email: user.email, enquiryId }
   )
 
   if (!enquiry) {

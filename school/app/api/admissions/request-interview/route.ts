@@ -9,15 +9,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { interviewDate } = await req.json();
-    if (!interviewDate) {
-      return NextResponse.json({ error: "interviewDate is required" }, { status: 400 });
+    const { interviewDate, enquiryId } = await req.json();
+    if (!interviewDate || !enquiryId) {
+      return NextResponse.json({ error: "interviewDate and enquiryId are required" }, { status: 400 });
     }
 
     // Check if user has an enquiry
     const enquiry = await serverClient.fetch(
-      `*[_type == "admissionEnquiry" && email == $email][0]`,
-      { email: user.email }
+      `*[_type == "admissionEnquiry" && email == $email && _id == $enquiryId][0]`,
+      { email: user.email, enquiryId }
     );
 
     if (!enquiry) {

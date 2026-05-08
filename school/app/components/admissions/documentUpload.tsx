@@ -3,10 +3,11 @@
 import { useState } from "react";
 
 type props = {
-    requiredDocs?: string[] // ✅ made optional
+    requiredDocs?: string[],
+    enquiryId: string
 }
 
-export default function DocumentUpload({ requiredDocs = [] }: props) { // ✅ default fallback
+export default function DocumentUpload({ requiredDocs = [], enquiryId }: props) {
 
     const [files, setFiles] = useState<any>({})
     const [preview, setPreview] = useState<any>({})
@@ -41,6 +42,7 @@ export default function DocumentUpload({ requiredDocs = [] }: props) { // ✅ de
         setLoading(true)
 
         const formData = new FormData()
+        formData.append("enquiryId", enquiryId)
         Object.keys(files).forEach(key => {
             formData.append(key, files[key])
         })

@@ -1,14 +1,12 @@
 import {cookies} from 'next/headers';
-import prisma from '../../../lib/prisma';
+import { query } from '../../../../lib/db';
 
 export async function POST(){
     try{
         const cookieStore=await cookies();
         const sessionId=cookieStore.get("session")?.value;
         if(sessionId){
-            await prisma.session.delete({
-                where:{id:sessionId}
-            }).catch(()=>{})
+            await query('DELETE FROM "Session" WHERE id = $1', [sessionId]).catch(()=>{})
         }
         cookieStore.set("session","",{
             maxAge:0,

@@ -4,7 +4,7 @@ import { format } from "date-fns"
 import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
 
-export default function InterviewScheduler() {
+export default function InterviewScheduler({ enquiryId }: { enquiryId: string }) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [availableSlots, setAvailableSlots] = useState<string[]>([])
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
@@ -34,7 +34,7 @@ export default function InterviewScheduler() {
       const res = await fetch("/api/admissions/request-interview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ interviewDate: selectedSlot })
+        body: JSON.stringify({ interviewDate: selectedSlot, enquiryId })
       })
       const data = await res.json()
       if (data.success) {

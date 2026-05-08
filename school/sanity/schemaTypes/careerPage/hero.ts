@@ -1,6 +1,6 @@
 import {defineType} from 'sanity';
-export const admissionsHero = defineType({
-  name: "admissionsHero",
+export const careerHero = defineType({
+  name: "careerHero",
   type: "object",
   fields: [
     { name: "title", type: "string" },

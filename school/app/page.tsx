@@ -1,6 +1,4 @@
 import HeroCanvas from './components/Hero';
-import Header from './components/Header';
-import Footer from './components/Footer'
 import AboutSection from './components/about/AboutSection'
 import {aboutQuery} from './lib/queries/about';
 import AcademicsSection from './components/Academics'
@@ -18,12 +16,10 @@ export default async function Home() {
 
   return (
     <>
-      <Header user={user} />
       <HeroCanvas />
       <AboutSection data={aboutData}/>
       <AcademicsSection data={academicData}/>
       <ContactSection data={contactData}/>
-      <Footer/>
     </>
   );
 }

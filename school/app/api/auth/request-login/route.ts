@@ -1,4 +1,5 @@
-import prisma from "../../../lib/prisma"
+import { query } from "../../../../lib/db"
+import { User } from "../../../../lib/types"
 import crypto from "crypto"
 import { client as sanityClient } from "@/sanity/lib/client"
 import { sendMagicLoginMail } from "../../../lib/utils/mailService"
@@ -27,24 +28,18 @@ export async function POST(req: Request) {
     )
   }
 
-
-  let user = await prisma.user.findUnique({
-    where: { email }
-  })
+  const userRes = await query('SELECT * FROM "User" WHERE email = $1', [email])
+  let user: User | undefined = userRes.rows[0]
 
   if (!user) {
-    user = await prisma.user.create({
-      data: {
-        email,
-        parentName: enquiry.parentName
-      }
-    })
+    const insertRes = await query(
+      'INSERT INTO "User" (email, "parentName") VALUES ($1, $2) RETURNING *',
+      [email, enquiry.parentName]
+    )
+    user = insertRes.rows[0] as User
   }
 
-  await prisma.magicToken.deleteMany({
-    where: { userId: user.id }
-  })
-
+  await query('DELETE FROM "MagicToken" WHERE "userId" = $1', [user.id])
 
   const token = crypto.randomBytes(32).toString("hex")
 
@@ -53,14 +48,10 @@ export async function POST(req: Request) {
     .update(token)
     .digest("hex")
 
-  await prisma.magicToken.create({
-    data: {
-      tokenHash,
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 15 * 60 * 1000)
-    }
-  })
-
+  await query(
+    'INSERT INTO "MagicToken" ("tokenHash", "userId", "expiresAt") VALUES ($1, $2, $3)',
+    [tokenHash, user.id, new Date(Date.now() + 15 * 60 * 1000)]
+  )
 
   const loginLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`
 

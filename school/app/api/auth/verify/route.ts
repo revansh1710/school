@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
-import prisma from "../../../lib/prisma"
+import { query } from "../../../../lib/db"
+import { MagicToken, Session } from "../../../../lib/types"
 import crypto from "crypto"
 
 export async function GET(req: Request) {
@@ -16,26 +17,21 @@ export async function GET(req: Request) {
     .update(token)
     .digest("hex")
 
-  const tokenRecord = await prisma.magicToken.findFirst({
-    where: { tokenHash }
-  })
+  const { rows: tokenRows } = await query('SELECT * FROM "MagicToken" WHERE "tokenHash" = $1 LIMIT 1', [tokenHash])
+  const tokenRecord = tokenRows[0] as MagicToken | undefined
 
   if (!tokenRecord || tokenRecord.expiresAt < new Date()) {
     return NextResponse.json({ error: "Token expired" }, { status: 400 })
   }
 
-  await prisma.magicToken.update({
-    where: { id: tokenRecord.id },
-    data: { used: true }
-  })
+  await query('UPDATE "MagicToken" SET used = true WHERE id = $1', [tokenRecord.id])
 
-  const session = await prisma.session.create({
-    data: {
-      id:crypto.randomUUID(),
-      userId: tokenRecord.userId,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    }
-  })
+  const sessionId = crypto.randomUUID()
+  const { rows: sessionRows } = await query(
+    'INSERT INTO "Session" (id, "userId", "expiresAt") VALUES ($1, $2, $3) RETURNING *',
+    [sessionId, tokenRecord.userId, new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)]
+  )
+  const session = sessionRows[0] as Session
 
   const response = NextResponse.redirect(new URL("/dashboard", req.url))
 

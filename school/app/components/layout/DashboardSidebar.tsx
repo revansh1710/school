@@ -19,7 +19,6 @@ const MANDALA_INNER = [0,45,90,135,180,225,270,315].map(d => {
 })
 
 const navItems = [
-  { name: "Documents", href: "/dashboard/documents", icon: "📄", sanskrit: "दस्तावेज़" },
   { name: "Admission Status", href: "/dashboard", icon: "📊", sanskrit: "प्रवेश" },
 ]
 

@@ -7,10 +7,10 @@ export default function AdmissionsEnquiryForm() {
     parentName: "",
     email: "",
     phone: "",
-    studentName: "",
-    grade: "",
     message: "",
   })
+
+  const [students, setStudents] = useState([{ studentName: "", grade: "" }])
 
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -19,18 +19,36 @@ export default function AdmissionsEnquiryForm() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
+  const handleStudentChange = (index: number, field: string, value: string) => {
+    const newStudents = [...students]
+    newStudents[index] = { ...newStudents[index], [field]: value }
+    setStudents(newStudents)
+  }
+
+  const addStudent = () => {
+    setStudents([...students, { studentName: "", grade: "" }])
+  }
+
+  const removeStudent = (index: number) => {
+    if (students.length > 1) {
+      setStudents(students.filter((_, i) => i !== index))
+    }
+  }
+
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     setLoading(true)
     try {
+      const payload = { ...form, students }
       const res = await fetch("/api/admissions/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       })
       if (res.ok) {
         setSuccess(true)
-        setForm({ parentName: "", email: "", phone: "", studentName: "", grade: "", message: "" })
+        setForm({ parentName: "", email: "", phone: "", message: "" })
+        setStudents([{ studentName: "", grade: "" }])
       }
     } catch (err) {
       console.error(err)
@@ -381,7 +399,7 @@ export default function AdmissionsEnquiryForm() {
                   </div>
                 </div>
 
-                {/* Row 2 — Phone & Student */}
+                {/* Row 2 — Phone */}
                 <div className="enq-row">
                   <div className="enq-field">
                     <label className="enq-field-label" htmlFor="phone">Phone</label>
@@ -395,39 +413,65 @@ export default function AdmissionsEnquiryForm() {
                       required
                     />
                   </div>
-                  <div className="enq-field">
-                    <label className="enq-field-label" htmlFor="studentName">Student Name</label>
-                    <input
-                      id="studentName"
-                      className="enq-input"
-                      name="studentName"
-                      placeholder="Child's full name"
-                      value={form.studentName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                  <div className="enq-field" style={{ border: 'none', background: 'transparent' }} />
                 </div>
 
-                {/* Grade — full width select */}
-                <div className="enq-field">
-                  <label className="enq-field-label" htmlFor="grade">Grade Applying For</label>
-                  <div className="enq-select-wrap">
-                    <select
-                      id="grade"
-                      className="enq-select"
-                      name="grade"
-                      value={form.grade}
-                      onChange={handleChange}
-                      required
-                    >
-                      <option value="" disabled>Select a grade</option>
-                      {["Nursery", "LKG", "UKG", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5",
-                        "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10"].map((g) => (
-                          <option key={g} value={g}>{g}</option>
-                        ))}
-                    </select>
-                  </div>
+                {/* Students Array */}
+                <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
+                   <p className="enq-label">Student Details</p>
+                   {students.map((student, index) => (
+                     <div key={index} style={{ marginBottom: '1rem', padding: '1rem', background: 'rgba(184,151,90,0.05)', border: '1px solid rgba(184,151,90,0.15)' }}>
+                       <div className="enq-row">
+                         <div className="enq-field">
+                           <label className="enq-field-label">Student Name</label>
+                           <input
+                             className="enq-input"
+                             placeholder="Child's full name"
+                             value={student.studentName}
+                             onChange={(e) => handleStudentChange(index, "studentName", e.target.value)}
+                             required
+                           />
+                         </div>
+                         <div className="enq-field">
+                           <label className="enq-field-label">Grade Applying For</label>
+                           <div className="enq-select-wrap">
+                             <select
+                               className="enq-select"
+                               value={student.grade}
+                               onChange={(e) => handleStudentChange(index, "grade", e.target.value)}
+                               required
+                             >
+                               <option value="" disabled>Select a grade</option>
+                               {["Nursery", "LKG", "UKG", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5",
+                                 "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10"].map((g) => (
+                                   <option key={g} value={g}>{g}</option>
+                                 ))}
+                             </select>
+                           </div>
+                         </div>
+                       </div>
+                       {students.length > 1 && (
+                         <div style={{ textAlign: 'right' }}>
+                           <button 
+                             type="button" 
+                             onClick={() => removeStudent(index)}
+                             style={{ marginTop: '0.5rem', background: 'none', border: 'none', color: '#B8975A', fontSize: '0.65rem', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em' }}
+                           >
+                             - Remove Student
+                           </button>
+                         </div>
+                       )}
+                     </div>
+                   ))}
+                   <button 
+                     type="button" 
+                     onClick={addStudent}
+                     style={{ background: 'none', border: '1px dashed rgba(184,151,90,0.5)', color: '#B8975A', padding: '0.75rem', width: '100%', fontSize: '0.72rem', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', transition: 'all 0.2s ease' }}
+                     onMouseOver={(e) => (e.currentTarget.style.background = 'rgba(184,151,90,0.05)')}
+                     onMouseOut={(e) => (e.currentTarget.style.background = 'none')}
+                   >
+                     + Add Another Student
+                   </button>
                 </div>
 
                 {/* Message */}

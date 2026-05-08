@@ -27,44 +27,39 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    if (!body.email || !body.parentName || !body.grade) {
+    if (!body.email || !body.parentName || !body.students || body.students.length === 0) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       )
     }
 
-    const gradeCategory = mapGradeToCategory(body.grade)
+    // Map over each student and create an independent Sanity document
+    await Promise.all(body.students.map(async (student: { studentName: string; grade: string }) => {
+      const gradeCategory = mapGradeToCategory(student.grade)
+      const requiredDocuments = admissionConfig[gradeCategory as keyof typeof admissionConfig]
 
-    const requiredDocuments =
-      admissionConfig[gradeCategory as keyof typeof admissionConfig]
+      if (!requiredDocuments) {
+        throw new Error("Invalid grade configuration")
+      }
 
-    if (!requiredDocuments) {
-      return NextResponse.json(
-        { error: "Invalid grade configuration" },
-        { status: 400 }
-      )
-    }
+      await serverClient.create({
+        _type: "admissionEnquiry",
+        parentName: body.parentName,
+        email: body.email,
+        phone: body.phone,
+        studentName: student.studentName,
+        grade: student.grade,
+        gradeCategory,
+        requiredDocuments,
+        message: body.message,
+        status: "new",
+        documentsStatus: "pending",
+        createdAt: new Date().toISOString(),
+      })
+    }))
 
-    await serverClient.create({
-      _type: "admissionEnquiry",
-      parentName: body.parentName,
-      email: body.email,
-      phone: body.phone,
-      studentName: body.studentName,
-      grade: body.grade,
-
-      gradeCategory,
-
-      requiredDocuments,
-
-      message: body.message,
-
-      status: "new",
-      documentsStatus: "pending",
-      createdAt: new Date().toISOString(),
-    })
-
+    // Send only one welcome email to the parent
     await sendWelcomeMail({
       to: body.email,
       name: body.parentName,

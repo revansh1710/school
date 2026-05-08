@@ -6,7 +6,7 @@ export default function Footer() {
 
         .footer-root {
           font-family: 'DM Sans', sans-serif;
-          background-color: #1A1410;
+          background-color: black;
           position: relative;
           overflow: hidden;
         }

@@ -43,12 +43,11 @@ const Hero: React.FC = () => {
                             Empowering curious minds through a blend of rigorous academics and creative discovery. See how we nurture the innovators of tomorrow.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-                            <button className="w-full sm:w-auto bg-secondary-container text-on-primary font-headline-md text-lg px-8 py-4 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-orange-500/20">
-                                Explore Our Curriculum
+                            <button className="w-full sm:w-auto bg-transparent text-on-primary font-headline-md text-lg px-8 py-4 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-orange-500/20">
+                                 Careers
                             </button>
-                            <button className="w-full sm:w-auto flex items-center justify-center gap-2 border-2 border-outline-variant text-on-surface font-label-md px-8 py-4 rounded-xl hover:border-primary-container hover:text-primary transition-all">
-                                <span className="material-symbols-outlined">calendar_today</span>
-                                Schedule a Tour
+                            <button className="w-full sm:w-auto bg-transparent text-on-primary font-headline-md text-lg px-8 py-4 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-orange-500/20">
+                                Have a campus visit
                             </button>
                         </div>
                         <div className="flex items-center gap-6 pt-8">
@@ -57,8 +56,8 @@ const Hero: React.FC = () => {
                                 <img className="w-12 h-12 rounded-full border-2 border-white object-cover" alt="smiling young girl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAvygi5ovfDU7A2ZHb_TZu7HIJ3MsksasQdmCZetS02WUR-r-Lx-2xgWoZ-jxXzUQFKsBRl2zJN2-qfIGieYMqj4Kpni6Nj9xIwCdqlwZCPHjoCErG3a0r2GwlwNrUKSuAVQxhm6RCdtxPmkUYlkyEhLdW1wnKE7AVXWysMTwkWznJn0gppubyzk2MpcssLRlwd-ESTkK24-stM3RO-P9bfgPITJlZ2sTvqdfWbhO4WOpc_iqPd1tsqAN00q4NJHLXfuPFlh-xe7E"/>
                                 <img className="w-12 h-12 rounded-full border-2 border-white object-cover" alt="joyful young boy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt36eTt9jnw72A9HmB5aHxlNMwNeXcxRYjKbd0-V8uEfRAlDEeT2uVit3EqEj0YPZJCurUf38fNxCNMNy9RL75uqZDNm8_d_kOqgLEgytNP_TBdODab4-8tRwBwIEbPeZHEs_rKluuIxORpe-cZ9E9WNzs2asWAAGPuR6MFJWucSzgm92dweHlMfjwid4eynJ92kNI3wr6ZlHx7CJfGBQpufA8rMA1sEtNVhl97Tf9d6v3e2o-VLTi6Dn6MLuo8yJ5r_P7szzcjx4"/>
                             </div>
-                            <div className="text-sm font-label-md text-on-surface-variant">
-                                <span className="text-on-surface font-bold">500+</span> Families trust us
+                            <div className="text-sm font-label-md text-orange-600">
+                                <span className="text-orange-600 text-bold font-label">Prepare for a journey like a voyager.</span> Destiny towards endless oppurtunities
                             </div>
                         </div>
                     </div>
@@ -74,11 +73,10 @@ const Hero: React.FC = () => {
                                 <img className="w-full h-full object-cover" alt="child painting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATlWW8fx289-ZAKYmyW_tVz_0-shn8Dh0ajsWmjbMG4o_UpCz5QSpAxMkCXjzYrxbOP_eo0-dJnBBkZKcwIllU7bwOwvhqL91Kcmgp8r1nOOiSKxvqfgIbmy2Maxs5Ue4VqPuugL4ZKGpMm4FfRt_zuuC65Y9c8OqdQxs2qjh7Hfl6FBaSJSpukAcE-Pfw5peXgfTg_yq_nDiDkWUnGw_h9GjfDbddt30A0z6hFHriZZSjKMCu6Qd_gsDWagJr8FlgQ_Q2EJ1rZ4I"/>
                             </div>
                             <div className="col-start-9 col-span-4 row-start-6 row-span-7 bg-white rounded-3xl p-6 flex flex-col justify-end text-black shadow-xl">
-                                <span className="material-symbols-outlined text-4xl mb-4">learn</span>
-                                <h3 className="font-headline-md text-lg leading-tight">Igniting Future Paths</h3>
+                                <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Innovation" src="/images/Hero.jpg"/>
                             </div>
                             <div className="col-span-8 row-span-4 overflow-hidden rounded-3xl border-4 border-white shadow-xl relative group">
-                                <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Innovation" src="/images/hero1.jpg"/>
+                                <video autoPlay muted className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="/videos/Hero.mp4"/>
                                 <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg flex items-center gap-2">
                                 </div>
                             </div>
@@ -89,30 +87,6 @@ const Hero: React.FC = () => {
                 </div>
             </section>
             
-            {/* Quick Stats / Trust Bar */}
-            <section className="max-w-7xl mx-auto px-6 pb-16">
-                <div className="bg-surface-container rounded-[40px] p-8 md:p-12 border-2 border-white shadow-inner flex flex-wrap justify-around gap-8">
-                    <div className="text-center group">
-                        <div className="text-4xl md:text-5xl font-headline-xl text-primary mb-1">98%</div>
-                        <div className="font-label-md text-on-surface-variant group-hover:text-primary transition-colors">Student Satisfaction</div>
-                    </div>
-                    <div className="w-px h-16 bg-outline-variant hidden md:block"></div>
-                    <div className="text-center group">
-                        <div className="text-4xl md:text-5xl font-headline-xl text-secondary-container mb-1">12:1</div>
-                        <div className="font-label-md text-on-surface-variant group-hover:text-secondary transition-colors">Teacher Ratio</div>
-                    </div>
-                    <div className="w-px h-16 bg-outline-variant hidden md:block"></div>
-                    <div className="text-center group">
-                        <div className="text-4xl md:text-5xl font-headline-xl text-tertiary mb-1">25+</div>
-                        <div className="font-label-md text-on-surface-variant group-hover:text-tertiary transition-colors">Creative Studios</div>
-                    </div>
-                    <div className="w-px h-16 bg-outline-variant hidden md:block"></div>
-                    <div className="text-center group">
-                        <div className="text-4xl md:text-5xl font-headline-xl text-primary-container mb-1">100%</div>
-                        <div className="font-label-md text-on-surface-variant group-hover:text-primary-container transition-colors">Joyful Learning</div>
-                    </div>
-                </div>
-            </section>
         </main>
     );
 };

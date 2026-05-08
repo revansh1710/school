@@ -33,7 +33,6 @@ export default async function DashboardLayout({
   
     const data = await res.json()
   
-
   return (
     <div style={{
       minHeight: "100vh",
@@ -42,7 +41,7 @@ export default async function DashboardLayout({
       background: "#f9fafb"
     }}>
 
-      <DashboardHeader parentName={user.parentName ?? undefined} status={data.status} />
+      <DashboardHeader parentName={user.parentName ?? undefined} status={undefined} />
 
       {/* MAIN AREA */}
       <div style={{

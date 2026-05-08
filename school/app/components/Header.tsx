@@ -16,8 +16,9 @@ export default function Header({ user }: HeaderProps) {
         { label: 'About', href: '/#about', icon: '🏛️' },
         { label: 'Academics', href: '/#academics', icon: '📚' },
         { label: 'Admissions', href: '/admissions', icon: '🎓' },
-        { label: 'Gallery', href: '/gallery', icon: '🖼️' },
         { label: 'Contact', href: '/#contact', icon: '📬' },
+        { label: 'Gallery', href: '/gallery', icon: '🖼️' },
+        { label:'Careers',href:'/careers',icon:'🎓'}
     ];
 
     const openMenu = () => {
@@ -159,7 +160,7 @@ export default function Header({ user }: HeaderProps) {
                         <Link
                             href="/"
                             className="text-lg sm:text-xl font-bold tracking-wide
-                                bg-linear-to-r from-green-500 to-olive-900 bg-clip-text text-transparent"
+                                bg-linear-to-r from-green-500 to-orange-900 bg-clip-text text-transparent"
                         >
                             School
                         </Link>
@@ -171,7 +172,7 @@ export default function Header({ user }: HeaderProps) {
                             <Link
                                 key={link.label}
                                 href={link.href}
-                                className="text-sm font-medium text-black hover:text-sky-400 transition-colors"
+                                className="text-sm font-bold text-sky-800 hover:text-sky-400  transition-colors"
                             >
                                 {link.label}
                             </Link>

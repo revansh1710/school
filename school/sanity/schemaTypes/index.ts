@@ -11,11 +11,37 @@ import { processStep } from "./admissionPage/processStep";
 import { documentItem } from "./admissionPage/documentItem";
 import { admissionsCTA } from "./admissionPage/admissionCTA";
 import admissionEnquiry from './admissionPage/admissionEnquiry'
+
+import careerPage from './careerPage/careerPage'
+import { careerHero } from "./careerPage/hero";
+import { careerOverview } from "./careerPage/overview";
+import { careerEligibilityItem } from "./careerPage/eligibility";
+import { careerProcessStep } from "./careerPage/processStep";
+import { careerDocumentItem } from "./careerPage/documentItem";
+import { careerCTA } from "./careerPage/careerCTA";
+import careerEnquiry from './careerPage/careerEnquiry'
+
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [about, academics, gallery, contact, admission, admissionsHero,
-admissionsOverview,
+  types: [
+    about, 
+    academics, 
+    gallery, 
+    contact, 
+    admission, 
+    admissionsHero,
+    admissionsOverview,
     eligibilityItem,
     processStep,
     documentItem,
-    admissionsCTA,admissionEnquiry],
+    admissionsCTA,
+    admissionEnquiry,
+    careerPage,
+    careerHero,
+    careerOverview,
+    careerEligibilityItem,
+    careerProcessStep,
+    careerDocumentItem,
+    careerCTA,
+    careerEnquiry
+  ],
 }

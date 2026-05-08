@@ -1,7 +1,8 @@
-import prisma from "../app/lib/prisma"
+import { query } from "./db"
+import { User, Session } from "./types"
 import { cookies } from "next/headers"
 
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<User | null> {
 
   const cookieStore = await (cookies() as ReturnType<typeof cookies>) // ✅ correct
  // ✅ correct
@@ -13,26 +14,28 @@ export async function getCurrentUser() {
   }
 
   try {
-    const session = await prisma.session.findUnique({
-      where: { id: sessionId },
-      include: { user: true }
-    })
-
-    if (!session) {
+    const sessionRes = await query('SELECT * FROM "Session" WHERE id = $1', [sessionId])
+    
+    if (sessionRes.rows.length === 0) {
       return null
     }
+    
+    const session = sessionRes.rows[0] as Session
 
     if (session.expiresAt < new Date()) {
-      await prisma.session.delete({
-        where: { id: session.id }
-      })
+      await query('DELETE FROM "Session" WHERE id = $1', [session.id])
       return null
     }
 
-    return session.user
+    const userRes = await query('SELECT * FROM "User" WHERE id = $1', [session.userId])
+    if (userRes.rows.length === 0) {
+      return null
+    }
+
+    return userRes.rows[0] as User
 
   } catch (error) {
     console.error("getCurrentUser error:", error)
     return null
   }
-}
+}
