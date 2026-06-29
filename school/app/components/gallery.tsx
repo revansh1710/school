@@ -3,16 +3,39 @@ import { useState } from "react";
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
+export interface GalleryVideo {
+  url: string;
+  title?: string;
+  description?: string;
+}
+
 export interface Gallery {
   _id: string;
   title: string;
-  images: GalleryImage[];
+  images?: GalleryImage[];
+  videos?: GalleryVideo[];
 }
 
 export interface GalleryImage {
   url: string;
   alt?: string;
   caption?: string;
+  metadata?: {
+    lqip?: string;
+    dimensions?: {
+      width: number;
+      height: number;
+    };
+  };
+}
+
+export type MediaType = 'image' | 'video';
+
+export interface GalleryMedia {
+  type: MediaType;
+  url: string;
+  altOrTitle?: string;
+  captionOrDesc?: string;
   metadata?: {
     lqip?: string;
     dimensions?: {
@@ -39,19 +62,35 @@ interface GallerySectionProps {
 }
 
 export default function GallerySection({ gallery }: GallerySectionProps) {
-  const [lightbox, setLightbox] = useState<GalleryImage | null>(null);
+  const [lightbox, setLightbox] = useState<GalleryMedia | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  const openLightbox = (img: GalleryImage, i: number) => {
-    setLightbox(img);
+  const mediaList: GalleryMedia[] = [
+    ...(gallery.images || []).map((img): GalleryMedia => ({
+      type: 'image',
+      url: img.url,
+      altOrTitle: img.alt,
+      captionOrDesc: img.caption,
+      metadata: img.metadata
+    })),
+    ...(gallery.videos || []).map((vid): GalleryMedia => ({
+      type: 'video',
+      url: vid.url,
+      altOrTitle: vid.title,
+      captionOrDesc: vid.description,
+    }))
+  ];
+
+  const openLightbox = (media: GalleryMedia, i: number) => {
+    setLightbox(media);
     setLightboxIndex(i);
   };
 
   const closeLightbox = () => setLightbox(null);
 
   const navigateLightbox = (dir: 1 | -1) => {
-    const next = (lightboxIndex + dir + gallery.images.length) % gallery.images.length;
-    setLightbox(gallery.images[next]);
+    const next = (lightboxIndex + dir + mediaList.length) % mediaList.length;
+    setLightbox(mediaList[next]);
     setLightboxIndex(next);
   };
 
@@ -300,7 +339,8 @@ export default function GallerySection({ gallery }: GallerySectionProps) {
           to   { transform: scale(1);    opacity: 1; }
         }
 
-        .lb-inner img {
+        .lb-inner img,
+        .lb-inner video {
           max-width: 90vw;
           max-height: 72vh;
           object-fit: contain;
@@ -386,13 +426,13 @@ export default function GallerySection({ gallery }: GallerySectionProps) {
 
         {/* ── Grid ── */}
         <div className="g-grid">
-          {gallery.images.map((img, i) => (
+          {mediaList.map((media, i) => (
             <GalleryCard
-              key={`${gallery._id}-${i}`}
-              img={img}
+              key={`${gallery._id}-media-${i}`}
+              media={media}
               index={i}
               size={getSize(i)}
-              onClick={() => openLightbox(img, i)}
+              onClick={() => openLightbox(media, i)}
             />
           ))}
         </div>
@@ -402,21 +442,25 @@ export default function GallerySection({ gallery }: GallerySectionProps) {
       {lightbox && (
         <div className="lb-bg" onClick={closeLightbox}>
           <div className="lb-inner" onClick={(e) => e.stopPropagation()}>
-            <img src={lightbox.url} alt={lightbox.alt ?? ""} />
+            {lightbox.type === 'video' ? (
+              <video src={lightbox.url} controls autoPlay className="lb-media" />
+            ) : (
+              <img src={lightbox.url} alt={lightbox.altOrTitle ?? ""} className="lb-media" />
+            )}
             <div className="lb-info">
-              {lightbox.alt     && <span className="lb-alt">{lightbox.alt}</span>}
-              {lightbox.caption && <span className="lb-caption">{lightbox.caption}</span>}
+              {lightbox.altOrTitle    && <span className="lb-alt">{lightbox.altOrTitle}</span>}
+              {lightbox.captionOrDesc && <span className="lb-caption">{lightbox.captionOrDesc}</span>}
             </div>
           </div>
 
           <button className="lb-close" onClick={closeLightbox}>Close</button>
 
-          {gallery.images.length > 1 && (
+          {mediaList.length > 1 && (
             <>
               <button className="lb-nav prev" onClick={(e) => { e.stopPropagation(); navigateLightbox(-1); }}>←</button>
               <button className="lb-nav next" onClick={(e) => { e.stopPropagation(); navigateLightbox(1);  }}>→</button>
               <div className="lb-counter">
-                <strong>{lightboxIndex + 1}</strong> / {gallery.images.length}
+                <strong>{lightboxIndex + 1}</strong> / {mediaList.length}
               </div>
             </>
           )}
@@ -429,12 +473,12 @@ export default function GallerySection({ gallery }: GallerySectionProps) {
 // ─── GalleryCard ──────────────────────────────────────────────────────────────
 
 function GalleryCard({
-  img,
+  media,
   index,
   size,
   onClick,
 }: {
-  img: GalleryImage;
+  media: GalleryMedia;
   index: number;
   size: Size;
   onClick: () => void;
@@ -446,25 +490,37 @@ function GalleryCard({
     <div className={`g-item ${size}`} onClick={onClick}>
       <span className="g-num">{num}</span>
 
-      {/* LQIP blur-up placeholder */}
-      {img.metadata?.lqip && (
+      {/* LQIP blur-up placeholder (images only) */}
+      {media.metadata?.lqip && (
         <div
           className={`g-lqip${loaded ? " done" : ""}`}
-          style={{ backgroundImage: `url(${img.metadata.lqip})` }}
+          style={{ backgroundImage: `url(${media.metadata.lqip})` }}
         />
       )}
 
-      <img
-        className="g-img"
-        src={img.url}
-        alt={img.alt ?? ""}
-        loading="lazy"
-        onLoad={() => setLoaded(true)}
-      />
+      {media.type === 'video' ? (
+        <video
+          className="g-img"
+          src={media.url}
+          muted
+          loop
+          autoPlay
+          playsInline
+          onLoadedData={() => setLoaded(true)}
+        />
+      ) : (
+        <img
+          className="g-img"
+          src={media.url}
+          alt={media.altOrTitle ?? ""}
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+        />
+      )}
 
       <div className="g-overlay">
-        {img.caption && <span className="g-caption">{img.caption}</span>}
-        {img.alt     && <span className="g-alt">{img.alt}</span>}
+        {media.captionOrDesc && <span className="g-caption">{media.captionOrDesc}</span>}
+        {media.altOrTitle    && <span className="g-alt">{media.altOrTitle}</span>}
       </div>
 
       <div className="g-arrow">↗</div>

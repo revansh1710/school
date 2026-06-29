@@ -1,5 +1,6 @@
 import { getCurrentUser } from '../../lib/auth'
 import DashboardTabs from '../components/layout/DashboardTabs'
+import EnrolledStudents from '../components/dashboard/EnrolledStudents'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 
@@ -28,19 +29,23 @@ export default async function DashboardPage() {
   })
 
   const data = await res.json()
+  console.log(data)
   
-  if (data.error || !data.enquiries) {
+  if (data.error || (!data.enquiries?.length && !data.enrolledStudents?.length)) {
     return (
        <div className="flex flex-col items-center justify-center min-h-[50vh]">
          <h1 className='text-amber-600 text-2xl font-bold mb-4'>Welcome to your Dashboard</h1>
-         <p className="text-gray-500">No active admission enquiries found.</p>
+         <p className="text-gray-500">No active admission enquiries or enrolled students found.</p>
        </div>
     )
   }
 
   return (
-    <div>
-      <DashboardTabs enquiries={data.enquiries} />
+    <div className="min-h-screen bg-gray-50/50 pt-6">
+      <EnrolledStudents students={data.enrolledStudents} />
+      {data.enquiries && data.enquiries.length > 0 && (
+        <DashboardTabs enquiries={data.enquiries} />
+      )}
     </div>
   )
 }

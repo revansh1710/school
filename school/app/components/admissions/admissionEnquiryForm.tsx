@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { sendWelcomeMail } from '../../lib/utils/mailService'
+import { Section } from "lucide-react";
 export default function AdmissionsEnquiryForm() {
   const [form, setForm] = useState({
     parentName: "",
@@ -14,6 +15,7 @@ export default function AdmissionsEnquiryForm() {
 
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -38,6 +40,7 @@ export default function AdmissionsEnquiryForm() {
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     setLoading(true)
+    setError(null)
     try {
       const payload = { ...form, students }
       const res = await fetch("/api/admissions/enquiry", {
@@ -49,16 +52,26 @@ export default function AdmissionsEnquiryForm() {
         setSuccess(true)
         setForm({ parentName: "", email: "", phone: "", message: "" })
         setStudents([{ studentName: "", grade: "" }])
+      } else {
+        let errorMessage = "An unexpected error occurred. Please try again."
+        try {
+          const data = await res.json()
+          errorMessage = data.error || errorMessage
+        } catch (jsonErr) {
+          console.error("Failed to parse error response:", jsonErr)
+        }
+        setError(errorMessage)
       }
     } catch (err) {
       console.error(err)
+      setError("Failed to submit enquiry. Please check your network connection.")
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <>
+    <section id='admission'>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Outfit:wght@300;400;500;600&display=swap');
 
@@ -346,6 +359,28 @@ export default function AdmissionsEnquiryForm() {
           line-height: 1.7;
           max-width: 320px;
         }
+
+        /* Error state */
+        .enq-error {
+          background: #fdfaf9;
+          border: 1px solid rgba(220, 38, 38, 0.35);
+          color: #991b1b;
+          padding: 1rem 1.25rem;
+          font-size: 0.8rem;
+          margin-top: 1.5rem;
+          line-height: 1.5;
+          letter-spacing: 0.01em;
+          display: flex;
+          align-items: flex-start;
+          gap: 0.75rem;
+          animation: pop-in 0.3s cubic-bezier(0.16,1,0.3,1);
+        }
+        
+        .enq-error-icon {
+          color: #dc2626;
+          font-size: 1.1rem;
+          line-height: 1;
+        }
       `}</style>
 
       <div className="enq-wrap">
@@ -487,6 +522,13 @@ export default function AdmissionsEnquiryForm() {
                   />
                 </div>
 
+                {error && (
+                  <div className="enq-error">
+                    <span className="enq-error-icon">⚠️</span>
+                    <span>{error}</span>
+                  </div>
+                )}
+
                 <div className="enq-submit-row">
                   <button className="enq-btn" type="submit" disabled={loading}>
                     {loading ? (
@@ -502,6 +544,6 @@ export default function AdmissionsEnquiryForm() {
           )}
         </div>
       </div>
-    </>
+    </section>
   )
 }

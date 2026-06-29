@@ -65,6 +65,7 @@ export default function DocumentUpload({ requiredDocs = [], enquiryId }: props) 
     const uploadedCount = Object.keys(preview).length
     const totalCount = requiredDocs.length || 1 // ✅ prevent division by 0
     const allDone = requiredDocs.length > 0 && uploadedCount === requiredDocs.length
+
     return (
         <>
             <style>{`
@@ -141,6 +142,19 @@ export default function DocumentUpload({ requiredDocs = [], enquiryId }: props) 
           white-space: nowrap;
         }
 
+        .header-content {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 1.5rem;
+          position: relative;
+          z-index: 1;
+        }
+
+        .header-text-wrap {
+          flex: 1;
+        }
+
         .header-title {
           font-family: 'Playfair Display', serif;
           font-size: 1.35rem;
@@ -158,13 +172,11 @@ export default function DocumentUpload({ requiredDocs = [], enquiryId }: props) 
 
         /* ── Progress ring ── */
         .progress-ring-wrap {
-          position: absolute;
-          top: 1.25rem;
-          right: 1.5rem;
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 4px;
+          flex-shrink: 0;
         }
         .ring-svg { transform: rotate(-90deg); }
         .ring-bg   { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 4; }
@@ -438,28 +450,6 @@ export default function DocumentUpload({ requiredDocs = [], enquiryId }: props) 
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .trust-note {
-          text-align: center;
-          font-size: 0.62rem;
-          font-weight: 300;
-          color: #94a3b8;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-        }
-        .trust-note::before,
-        .trust-note::after {
-          content: '';
-          width: 24px; height: 1px;
-          background: linear-gradient(90deg, transparent, #cbd5e1);
-        }
-        .trust-note::after {
-          background: linear-gradient(90deg, #cbd5e1, transparent);
-        }
-
         /* ── All done celebration ── */
         .all-done-banner {
           background: linear-gradient(135deg, #0d1b2a, #162235);
@@ -499,6 +489,58 @@ export default function DocumentUpload({ requiredDocs = [], enquiryId }: props) 
           overflow: hidden;
           box-shadow: 0 12px 48px rgba(13,27,42,0.14);
           border: 1px solid rgba(201,168,76,0.15);
+          width: 100%;
+          max-width: 1024px;
+          min-width: 220px;
+          margin: 0 auto;
+        }
+
+        /* ── Responsive Queries (1024px down to 220px) ── */
+        
+        @media (max-width: 768px) {
+          .upload-shell { border-radius: 12px; }
+        }
+
+        @media (max-width: 480px) {
+          .upload-header { padding: 1.5rem 1.25rem 1.25rem; }
+          .header-title { font-size: 1.15rem; }
+          .cards-area { padding: 1.25rem; }
+          .upload-footer { padding: 0 1.25rem 1.25rem; }
+          .doc-filename { max-width: 130px; }
+          .crest-text { font-size: 0.55rem; letter-spacing: 0.15em; }
+        }
+
+        /* Ultra-small displays down to 220px */
+        @media (max-width: 360px) {
+          .header-content {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+          }
+          .header-title { font-size: 1.05rem; }
+          
+          .cards-area { padding: 1rem; }
+          .card-inner {
+            flex-direction: column;
+            text-align: center;
+            padding: 1rem;
+            gap: 0.5rem;
+          }
+          
+          .doc-icon-orb { margin: 0 auto; }
+          .doc-filename { max-width: 100%; white-space: normal; word-break: break-all; }
+          
+          .all-done-banner {
+            flex-direction: column;
+            text-align: center;
+            padding: 1rem;
+          }
+          .submit-btn {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            padding: 12px;
+          }
         }
       `}</style>
 
@@ -531,12 +573,10 @@ export default function DocumentUpload({ requiredDocs = [], enquiryId }: props) 
                         <div className="crest-divider" />
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-                        <div>
+                    {/* Using class instead of inline-styles for responsive stacking */}
+                    <div className="header-content">
+                        <div className="header-text-wrap">
                             <div className="header-title">Upload Your Documents</div>
-                            <div className="header-sub">
-                                Secure · Encrypted · Reviewed within 3 – 5 business days
-                            </div>
                         </div>
 
                         {/* Progress ring */}
@@ -572,7 +612,7 @@ export default function DocumentUpload({ requiredDocs = [], enquiryId }: props) 
                                         ) : (
                                             <div className="doc-hint">{doc}</div>
                                         )}
-                                    </div>  
+                                    </div>
 
                                     {isUploaded
                                         ? <div className="check-circle">✓</div>

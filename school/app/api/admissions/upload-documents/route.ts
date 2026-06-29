@@ -1,6 +1,6 @@
 import { getCurrentUser } from "../../../../lib/auth"
 import { client } from "../../../../sanity/lib/client"
-import { admissionConfig } from "../../../../lib/admissionConfig"
+import { admissionConfig, getRequiredDocumentsForEnquiry, isGradeCategory, mapGradeToCategory, type GradeCategory } from "../../../../lib/admissionConfig"
 import { serverClient } from '../../../lib/sanity/serverClient'
 export async function POST(req: Request) {
 
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   }
 
   // ✅ STEP 1: Get category
-  const category = (enquiry.gradeCategory || "primary") as keyof typeof admissionConfig
+  const category: GradeCategory = isGradeCategory(enquiry.gradeCategory) ? enquiry.gradeCategory : mapGradeToCategory(enquiry.grade)
 
   const rule = admissionConfig[category]
 
@@ -39,10 +39,7 @@ export async function POST(req: Request) {
   }
 
   // ✅ STEP 2: Validate required documents
-  const requiredDocs =
-    enquiry.requiredDocuments?.length
-      ? enquiry.requiredDocuments
-      : admissionConfig[category] // fallback
+  const requiredDocs = getRequiredDocumentsForEnquiry(enquiry)
 
   for (const doc of requiredDocs) {
     if (!formData.get(doc)) {

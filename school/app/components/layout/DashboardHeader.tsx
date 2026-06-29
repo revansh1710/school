@@ -216,9 +216,20 @@ export default function DashboardHeader({ parentName, status = "" }:DashboardHea
                 @media (max-width: 640px) {
                     .ticker-overflow { display: none; }
                     .nav-links-row   { display: none; }
+                    .header-main-row { padding: 0 1rem !important; gap: 0.5rem !important; }
+                    .greet-text { display: none !important; }
+                    .v-sep { display: none !important; }
+                    .logo-text { font-size: 0.95rem !important; }
+                    .crest-orb { width: 32px !important; height: 32px !important; font-size: 0.95rem !important; }
+                    .avatar-wrap { width: 32px !important; height: 32px !important; }
+                    .logout-btn { padding: 6px 12px !important; font-size: 0.6rem !important; }
                 }
                 @media (max-width: 900px) {
                     .nav-links-row { display: none; }
+                    .ticker-overflow { display: none; }
+                    .greet-text { display: none !important; }
+                    .v-sep { display: none !important; }
+                    .header-main-row { padding: 0 1rem !important; gap: 0.75rem !important; }
                 }
             `}</style>
 
@@ -241,7 +252,7 @@ export default function DashboardHeader({ parentName, status = "" }:DashboardHea
                 ))}
 
                 {/* Main row */}
-                <div style={{
+                <div className="header-main-row" style={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",

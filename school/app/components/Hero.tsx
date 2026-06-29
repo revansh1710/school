@@ -1,94 +1,217 @@
-'use client';
+"use client"
 
-import React from 'react';
-
-const Hero: React.FC = () => {
-    return (
-        <main className="relative overflow-hidden">
-            <style jsx>{`
-                .material-symbols-outlined {
-                    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-                }
-                .doodle-bg {
-                    background-image: radial-gradient(circle at 2px 2px, #dce9ff 1px, transparent 0);
-                    background-size: 32px 32px;
-                }
-                .sticker-shadow {
-                    filter: drop-shadow(4px 4px 0px rgba(14, 165, 233, 0.1));
-                }
-                .organic-blob {
-                    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-                }
-            `}</style>
-
-            {/* Background Doodles & Textures */}
-            <div className="absolute inset-0 doodle-bg opacity-40 pointer-events-none"></div>
-            <div className="absolute -top-24 -right-24 w-96 h-96 bg-tertiary-fixed/30 rounded-full blur-3xl"></div>
-            <div className="absolute top-1/2 -left-24 w-64 h-64 bg-primary-fixed/20 rounded-full blur-3xl"></div>
-            
-            {/* Hero Section */}
-            <section className="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    {/* Left Content Column */}
-                    <div className="space-y-8">
-
-                        <h1 className="font-headline-xl text-yellow-700 tracking-tight max-w-xl">
-                            Where Every Child's Story Begins with <span className="text-amber-400 relative">Wonder
-                                <svg className="absolute -bottom-2 left-0 w-full" fill="none" height="12" viewBox="0 0 168 12" width="168" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M2 10C35.5 4.5 90.5 -1.5 166 6" stroke="#fd761a" strokeLinecap="round" strokeWidth="4"></path>
-                                </svg>
-                            </span>
-                        </h1>
-                        <p className="font-body-lg text-on-surface-variant max-w-lg leading-relaxed">
-                            Empowering curious minds through a blend of rigorous academics and creative discovery. See how we nurture the innovators of tomorrow.
-                        </p>
-                        <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-                            <button className="w-full sm:w-auto bg-transparent text-on-primary font-headline-md text-lg px-8 py-4 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-orange-500/20">
-                                 Careers
-                            </button>
-                            <button className="w-full sm:w-auto bg-transparent text-on-primary font-headline-md text-lg px-8 py-4 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-orange-500/20">
-                                Have a campus visit
-                            </button>
-                        </div>
-                        <div className="flex items-center gap-6 pt-8">
-                            <div className="flex -space-x-4">
-                                <img className="w-12 h-12 rounded-full border-2 border-white object-cover" alt="close-up portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCE0mNKX_r7v_RAjCD_TcWtY_nAX9nWigGqhwUSJK4QSzEb-5nd97bxsAK3QUcy0pWVINXC6_DBHTQyg6CAU5s5p2iaNqoDvuLFI3YFEJ8PfmkSmtncfRLWCCb6xaHpeSG4YEFDXs74lrqqTsG-XpO-DgiGGXcHQF_bAmn7WU7UhJudMgSG9NzOaOs8qBTL4rpfvcLARoAEm2rIJKTkhtxjkMMcdz52SNjoMMa-C0r5Pcnm8lIEH9-9GGVZLtcC6ARnympT4622oUg"/>
-                                <img className="w-12 h-12 rounded-full border-2 border-white object-cover" alt="smiling young girl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAvygi5ovfDU7A2ZHb_TZu7HIJ3MsksasQdmCZetS02WUR-r-Lx-2xgWoZ-jxXzUQFKsBRl2zJN2-qfIGieYMqj4Kpni6Nj9xIwCdqlwZCPHjoCErG3a0r2GwlwNrUKSuAVQxhm6RCdtxPmkUYlkyEhLdW1wnKE7AVXWysMTwkWznJn0gppubyzk2MpcssLRlwd-ESTkK24-stM3RO-P9bfgPITJlZ2sTvqdfWbhO4WOpc_iqPd1tsqAN00q4NJHLXfuPFlh-xe7E"/>
-                                <img className="w-12 h-12 rounded-full border-2 border-white object-cover" alt="joyful young boy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt36eTt9jnw72A9HmB5aHxlNMwNeXcxRYjKbd0-V8uEfRAlDEeT2uVit3EqEj0YPZJCurUf38fNxCNMNy9RL75uqZDNm8_d_kOqgLEgytNP_TBdODab4-8tRwBwIEbPeZHEs_rKluuIxORpe-cZ9E9WNzs2asWAAGPuR6MFJWucSzgm92dweHlMfjwid4eynJ92kNI3wr6ZlHx7CJfGBQpufA8rMA1sEtNVhl97Tf9d6v3e2o-VLTi6Dn6MLuo8yJ5r_P7szzcjx4"/>
-                            </div>
-                            <div className="text-sm font-label-md text-orange-600">
-                                <span className="text-orange-600 text-bold font-label">Prepare for a journey like a voyager.</span> Destiny towards endless oppurtunities
-                            </div>
-                        </div>
-                    </div>
-                    {/* Right Visual Column: Bento Grid Style */}
-                    <div className="relative">
-                        {/* Main Large Image */}
-                        <div className="grid grid-cols-12 grid-rows-12 gap-4 h-150">
-                            <div className="col-span-8 row-span-8 relative overflow-hidden rounded-3xl border-4 border-white shadow-2xl">
-                                <img className="w-full h-full object-cover" alt="group of elementary students" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzQGpX_b-2kyvq3TvPcYaIkEMKuWoQtwkABsbTHyiN4KyoFYCRMspw4odrH90IGbhGoVOAuttmgDo0w-NuBmIzPDdR9pjU46yR7Tx5Ojln0dgQnSMrq8FL-2wDCPj5nM2YBstQoV5j-W4YAElxvx8ux9xXYZkk8b6VARDElUKl3WDlieKrz9bB63WeETXtdSfe8yddjxZpe5Le9Yo32lTDtjrEQ78aXFbp5-izboZb--1GUuxrcuxLw9ayXOqQjdNcrAwugLyxqyE"/>
-
-                            </div>
-                            <div className="col-span-4 row-span-5 relative overflow-hidden rounded-3xl border-4 border-white shadow-xl">
-                                <img className="w-full h-full object-cover" alt="child painting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATlWW8fx289-ZAKYmyW_tVz_0-shn8Dh0ajsWmjbMG4o_UpCz5QSpAxMkCXjzYrxbOP_eo0-dJnBBkZKcwIllU7bwOwvhqL91Kcmgp8r1nOOiSKxvqfgIbmy2Maxs5Ue4VqPuugL4ZKGpMm4FfRt_zuuC65Y9c8OqdQxs2qjh7Hfl6FBaSJSpukAcE-Pfw5peXgfTg_yq_nDiDkWUnGw_h9GjfDbddt30A0z6hFHriZZSjKMCu6Qd_gsDWagJr8FlgQ_Q2EJ1rZ4I"/>
-                            </div>
-                            <div className="col-start-9 col-span-4 row-start-6 row-span-7 bg-white rounded-3xl p-6 flex flex-col justify-end text-black shadow-xl">
-                                <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Innovation" src="/images/Hero.jpg"/>
-                            </div>
-                            <div className="col-span-8 row-span-4 overflow-hidden rounded-3xl border-4 border-white shadow-xl relative group">
-                                <video autoPlay muted className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="/videos/Hero.mp4"/>
-                                <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg flex items-center gap-2">
-                                </div>
-                            </div>
-                        </div>
+import Image from "next/image"
+import Link from "next/link"
+import {
+  ArrowUpRight,
+  GraduationCap,
+  BookOpen,
+  Users,
+} from "lucide-react"
 
 
-                    </div>
-                </div>
-            </section>
-            
-        </main>
-    );
-};
+export default function HeroCanvas() {
+  return (
+    <section
+      className="
+      relative 
+      overflow-hidden
+      bg-[#FAF7F0]
+      px-5
+      sm:px-8
+      lg:px-20
+      py-16
+      lg:py-24
+      "
+    >
+      <div
+        className="
+        absolute
+        -top-32
+        -right-32
+        h-80
+        w-80
+        rounded-full
+        bg-orange-200/50
+        blur-3xl
+        "
+      />
+      <div
+        className="
+        relative
+        mx-auto
+        max-w-7xl
+        grid
+        lg:grid-cols-2
+        gap-14
+        items-center
+        "
+      >
+        <div>
+          <h1
+            className="
+            mt-6
+            max-w-3xl
+            text-5xl
+            sm:text-6xl
+            lg:text-7xl
+            font-bold
+            tracking-tight
+            leading-[0.95]
+            text-slate-900
+            "
+          >
 
-export default Hero;
+            Where curiosity
+            becomes
+
+            <span
+              className="
+              block
+              italic
+              font-light
+              text-orange-600
+              "
+            >
+              capability.
+            </span>
+
+
+          </h1>
+          <p
+            className="
+            mt-6
+            max-w-xl
+            text-base
+            sm:text-lg
+            leading-relaxed
+            text-slate-600
+            "
+          >
+
+            A learning environment where students explore,
+            create and grow through academics, creativity,
+            technology and values.
+
+          </p>
+          <div
+            className="
+            mt-8
+            flex
+            flex-col
+            sm:flex-row
+            gap-3
+            "
+          >
+          </div>
+          <div
+            className="
+            mt-12
+            grid
+            grid-cols-3
+            gap-4
+            max-w-md
+            "
+          >
+          </div>
+        </div>
+        {/* IMAGE AREA */}
+
+        <div
+          className="
+          relative
+          "
+        >
+
+
+          <div
+            className="
+            overflow-hidden
+            rounded-[2.5rem]
+            shadow-2xl
+            "
+          >
+
+            <Image
+
+              src="/images/Hero.jpg"
+              alt="Students"
+
+              width={700}
+              height={800}
+
+              priority
+
+              className="
+              h-95
+              sm:h-130
+              w-full
+              object-cover
+              "
+
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
+
+
+function Stat({
+  icon,
+  number,
+  label
+}: {
+  icon: React.ReactNode,
+  number: string,
+  label: string
+}) {
+
+
+  return (
+
+    <div
+      className="
+bg-white
+rounded-2xl
+p-4
+shadow-sm
+"
+    >
+
+      <div className="h-5 w-5 text-orange-600">
+
+        {icon}
+
+      </div>
+
+
+      <p
+        className="
+mt-3
+font-bold
+text-lg
+"
+      >
+        {number}
+      </p>
+
+
+      <p
+        className="
+text-xs
+text-slate-500
+"
+      >
+        {label}
+      </p>
+
+
+    </div>
+
+  )
+
+}

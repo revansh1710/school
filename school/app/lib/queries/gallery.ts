@@ -10,6 +10,11 @@ export const galleryQuery = `
       lqip,
       dimensions
     }
+  },
+  videos[]{
+    title,
+    description,
+    "url": asset->url
   }
 }
 `;

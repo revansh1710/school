@@ -2,10 +2,29 @@ import { sendStatusUpdateMail } from "../../lib/utils/mailService"
 import { serverClient } from "../../lib/sanity/serverClient"
 import { query } from "../../../lib/db"
 import { Student } from "../../../lib/types"
+import { provisionStudentForEnquiry } from "../../../lib/studentProvision"
+
+import {isValidSignature,SIGNATURE_HEADER_NAME} from '@sanity/webhook';
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    const signature=req.headers.get(SIGNATURE_HEADER_NAME)
+    const rawBody=await req.text()
+    const secret = process.env.SANITY_WEBHOOK_SECRET
+    if (!signature || !isValidSignature(rawBody, signature, secret as string)) {
+      console.warn("Blocked unauthorized signature attempt")
+
+      return Response.json(
+        {
+          error: "Unauthorized"
+        },
+        {
+          status: 401
+        }
+      )
+    }
+
+    const body = JSON.parse(rawBody)
 
     const newStatus = body?.status
     const oldStatus = body?.previousStatus
@@ -56,28 +75,31 @@ export async function POST(req: Request) {
       
       if (!user) {
         const insertRes = await query(
-          'INSERT INTO "User" (email, "parentName") VALUES ($1, $2) RETURNING *',
-          [email, parentName || "Parent"]
+          'INSERT INTO "User" (email, "parentName", "status") VALUES ($1, $2, $3) RETURNING *',
+          [email, parentName || "Parent", "ACTIVE"]
         )
         user = insertRes.rows[0]
+      } else {
+        await query('UPDATE "User" SET status = $1 WHERE id = $2', ['ACTIVE', user.id])
       }
       
-      const studentName = body?.studentName || "Unknown"
-      const nameParts = studentName.trim().split(" ")
-      const firstName = nameParts[0]
-      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : ""
+      // Fetch full document from Sanity if missing fields in webhook payload
+      let fullDoc = body;
+      if (!body.studentName || !body.grade) {
+        fullDoc = await serverClient.fetch(
+          `*[_type == "admissionEnquiry" && email == $email][0]`,
+          { email }
+        ) || body;
+      }
 
-      // Create student and the ParentStudent relation
-      const studentRes = await query(
-        'INSERT INTO "Student" ("firstName", "lastName", "admissionStatus") VALUES ($1, $2, $3) RETURNING *',
-        [firstName, lastName, 'ACCEPTED']
-      )
-      const student = studentRes.rows[0] as Student
+      const studentName = fullDoc?.studentName || "Unknown"
+      const grade = fullDoc?.grade
 
-      await query(
-        'INSERT INTO "ParentStudent" ("parentId", "studentId") VALUES ($1, $2)',
-        [user.id, student.id]
-      )
+      try {
+        await provisionStudentForEnquiry(user.id, studentName, grade)
+      } catch (dbErr) {
+        console.error("Failed to provision student/invoice into Postgres:", dbErr)
+      }
     }
 
     // 3. Send email update based on main status change

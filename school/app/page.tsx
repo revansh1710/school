@@ -7,6 +7,7 @@ import ContactSection from './components/ContactSection';
 import {contactQuery} from './lib/queries/contact'
 import { client } from "@/sanity/lib/client";
 import { getCurrentUser } from '../lib/auth';
+import Footer from './components/Footer';
 
 export default async function Home() {
   const aboutData = await client.fetch(aboutQuery);
@@ -17,9 +18,11 @@ export default async function Home() {
   return (
     <>
       <HeroCanvas />
+      <></>
       <AboutSection data={aboutData}/>
       <AcademicsSection data={academicData}/>
       <ContactSection data={contactData}/>
+      <Footer/>
     </>
   );
 }

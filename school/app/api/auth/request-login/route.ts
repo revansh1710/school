@@ -16,25 +16,38 @@ export async function POST(req: Request) {
     )
   }
 
-  const enquiry = await sanityClient.fetch(
-    `*[_type == "admissionEnquiry" && email == $email][0]`,
-    { email }
-  )
-
-  if (!enquiry) {
-    return Response.json(
-      { error: "Email not registered with admissions" },
-      { status: 404 }
-    )
-  }
-
-  const userRes = await query('SELECT * FROM "User" WHERE email = $1', [email])
+  let userRes = await query('SELECT * FROM "User" WHERE email = $1', [email])
   let user: User | undefined = userRes.rows[0]
 
-  if (!user) {
+  let parentName = "Parent"
+
+  if (user) {
+    if (user.role !== 'PARENT') {
+      return Response.json(
+        { error: "This login method is restricted to parents only." },
+        { status: 403 }
+      )
+    }
+    parentName = user.parentName || "Parent"
+  } else {
+    // If user doesn't exist in Postgres, check Sanity
+    const enquiry = await sanityClient.fetch(
+      `*[_type == "admissionEnquiry" && email == $email][0]`,
+      { email }
+    )
+
+    if (!enquiry) {
+      return Response.json(
+        { error: "Email not registered with our school" },
+        { status: 404 }
+      )
+    }
+    
+    parentName = enquiry.parentName
+
     const insertRes = await query(
       'INSERT INTO "User" (email, "parentName") VALUES ($1, $2) RETURNING *',
-      [email, enquiry.parentName]
+      [email, parentName]
     )
     user = insertRes.rows[0] as User
   }

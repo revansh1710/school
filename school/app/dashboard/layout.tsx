@@ -34,27 +34,16 @@ export default async function DashboardLayout({
     const data = await res.json()
   
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      background: "#f9fafb"
-    }}>
+    <div className="min-h-screen flex flex-col bg-gray-50">
 
       <DashboardHeader parentName={user.parentName ?? undefined} status={undefined} />
 
       {/* MAIN AREA */}
-      <div style={{
-        display: "flex",
-        flex: 1
-      }}>
+      <div className="flex flex-row flex-1 w-full max-w-full overflow-hidden">
 
         <DashboardSidebar />
 
-        <main style={{
-          flex: 1,
-          padding: "2rem"
-        }}>
+        <main className="flex-1 p-4 md:p-6 lg:p-8 w-full max-w-full overflow-x-hidden pb-24 md:pb-8">
           {children}
         </main>
 

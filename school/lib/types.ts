@@ -12,3 +12,24 @@ export interface Student {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  parentName?: string;
+  role?: string;
+}
+
+export interface Session {
+  id: string;
+  userId: string;
+  expiresAt: Date;
+}
+
+export interface MagicToken {
+  id: string;
+  tokenHash: string;
+  userId: string;
+  expiresAt: Date;
+  used: boolean;
+}

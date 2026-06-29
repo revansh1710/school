@@ -20,6 +20,7 @@ import { careerProcessStep } from "./careerPage/processStep";
 import { careerDocumentItem } from "./careerPage/documentItem";
 import { careerCTA } from "./careerPage/careerCTA";
 import careerEnquiry from './careerPage/careerEnquiry'
+import { jobPosting } from './careerPage/jobPosting'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -42,6 +43,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     careerProcessStep,
     careerDocumentItem,
     careerCTA,
-    careerEnquiry
+    careerEnquiry,
+    jobPosting
   ],
 }

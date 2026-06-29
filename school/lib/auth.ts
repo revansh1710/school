@@ -4,8 +4,7 @@ import { cookies } from "next/headers"
 
 export async function getCurrentUser(): Promise<User | null> {
 
-  const cookieStore = await (cookies() as ReturnType<typeof cookies>) // ✅ correct
- // ✅ correct
+  const cookieStore = await (cookies() as ReturnType<typeof cookies>)
 
   const sessionId = cookieStore.get("session")?.value
 
@@ -32,10 +31,15 @@ export async function getCurrentUser(): Promise<User | null> {
       return null
     }
 
-    return userRes.rows[0] as User
+    const user = userRes.rows[0] as User
+    if (user.role !== 'PARENT') {
+      return null
+    }
+
+    return user
 
   } catch (error) {
     console.error("getCurrentUser error:", error)
     return null
   }
-}
+}

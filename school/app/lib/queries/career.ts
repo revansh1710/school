@@ -33,3 +33,14 @@ export const careerQuery = `
   }
 }
 `;
+
+export const jobPostingsQuery = `
+*[_type == "jobPosting" && isActive == true] | order(_createdAt desc) {
+  _id,
+  title,
+  location,
+  employmentType,
+  summary,
+  requirements
+}
+`;

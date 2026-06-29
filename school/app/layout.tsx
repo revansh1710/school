@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ScholarGuide from "./components/ScholarGuide";
 import Header from './components/Header';
-import Footer from './components/Footer';
 import {getCurrentUser} from '../lib/auth'
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,10 +30,8 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header user={user}/>
-        <ScholarGuide />
         {children}
       </body>
-    <Footer/>
     </html>
   );
 }

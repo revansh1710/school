@@ -19,7 +19,11 @@ const MANDALA_INNER = [0,45,90,135,180,225,270,315].map(d => {
 })
 
 const navItems = [
-  { name: "Admission Status", href: "/dashboard", icon: "📊", sanskrit: "प्रवेश" },
+  { name: "Admission Process", href: "/dashboard", icon: "📊", sanskrit: "प्रवेश-प्रक्रिया" },
+  { name: "Attendance", href: "/dashboard/attendance", icon: "📅", sanskrit: "उपस्थिति" },
+  { name: "Teachers Directory", href: "/dashboard/teachers", icon: "👥", sanskrit: "शिक्षक-निर्देशिका" },
+  { name: "Class Timetable", href: "/dashboard/timetable", icon: "🗓️", sanskrit: "समय-सारणी" },
+  { name: "Class Notes", href: "/dashboard/notes", icon: "📝", sanskrit: "कक्षा-टिप्पण्यः" },
 ]
 
 export default function DashboardSidebar() {
@@ -382,92 +386,62 @@ export default function DashboardSidebar() {
         }
 
         /* ══════════════════════════════════════════
-           RESPONSIVE — collapse to icon-only rail
+           RESPONSIVE — bottom navigation on mobile
         ══════════════════════════════════════════ */
         @media (max-width: 768px) {
           .takshashila-sidebar {
-            width: 68px;
-            min-width: 68px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            min-width: 100%;
+            height: 72px;
+            min-height: 72px;
+            flex-direction: row;
+            border-right: none;
+            border-top: 2px solid #8b5a1a;
+            z-index: 50;
+            background: #1a0e05;
           }
-          .shikhara-top { padding-top: 1rem; }
+          .takshashila-sidebar::after { display: none; }
+          .shikhara-top { display: none; }
           .temple-arch-svg { display: none; }
           .portal-title-block { display: none; }
           .nav-label-wrap { display: none; }
           .nav-section-label { display: none; }
-          .lotus-divider { padding: 0 0.5rem; }
-          .nav-area { padding: 0.5rem 0.5rem 1rem; gap: 4px; }
-          .nav-item { justify-content: center; padding: 10px 8px; }
-          .nav-icon-orb { width: 38px; height: 38px; font-size: 1.1rem; }
+          .lotus-divider { display: none; }
+          .nav-area { 
+            padding: 0; 
+            flex-direction: row; 
+            justify-content: space-around; 
+            align-items: center; 
+            width: 100%; 
+            height: 100%;
+          }
+          .nav-item { 
+            flex: 1; 
+            justify-content: center; 
+            padding: 0; 
+            border: none !important; 
+            height: 100%; 
+            border-radius: 0; 
+            background: transparent !important;
+          }
+          .nav-item.active { 
+            box-shadow: inset 0 3px 0 #c9a84c !important;
+            background: linear-gradient(180deg, rgba(139,90,26,0.2) 0%, transparent 100%) !important;
+          }
+          .nav-item::before { display: none; }
+          .nav-item::after { display: none; }
+          .nav-icon-orb { width: 44px; height: 44px; font-size: 1.3rem; margin: 0 auto; }
           .active-dot { display: none; }
           .sidebar-footer { display: none; }
-          .kalash { font-size: 1.2rem; }
+          .kalash { display: none; }
         }
       `}</style>
 
       <aside className="takshashila-sidebar">
-
-        {/* ── Temple Shikhara Top ── */}
-        <div className="shikhara-top">
-
-          {/* Kalash finial */}
-          <div className="kalash">🪔</div>
-
-          {/* Temple arch SVG */}
-          <svg className="temple-arch-svg" viewBox="0 0 240 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* Arch outline */}
-            <path d="M20 88 L20 45 Q20 10 120 10 Q220 10 220 45 L220 88"
-              stroke="rgba(139,90,26,0.7)" strokeWidth="1.5" fill="none" />
-            {/* Inner arch */}
-            <path d="M34 88 L34 50 Q34 24 120 24 Q206 24 206 50 L206 88"
-              stroke="rgba(200,140,40,0.35)" strokeWidth="1" fill="none" strokeDasharray="4 3" />
-
-            {/* Turrets left */}
-            <rect x="6"  y="56" width="14" height="32" rx="1" fill="rgba(139,90,26,0.25)" stroke="rgba(139,90,26,0.5)" strokeWidth="0.8" />
-            <path d="M6 56 Q13 46 20 56" fill="rgba(200,140,40,0.3)" />
-            {/* Turrets right */}
-            <rect x="220" y="56" width="14" height="32" rx="1" fill="rgba(139,90,26,0.25)" stroke="rgba(139,90,26,0.5)" strokeWidth="0.8" />
-            <path d="M220 56 Q227 46 234 56" fill="rgba(200,140,40,0.3)" />
-
-            {/* Horizontal jali bands */}
-            <line x1="20" y1="68" x2="220" y2="68" stroke="rgba(139,90,26,0.2)" strokeWidth="0.8" />
-            <line x1="20" y1="78" x2="220" y2="78" stroke="rgba(139,90,26,0.2)" strokeWidth="0.8" />
-
-            {/* Lotus medallion centre */}
-            <g transform="translate(120,48)">
-              <circle cx="0" cy="0" r="9" fill="rgba(80,40,10,0.8)" stroke="rgba(200,140,40,0.6)" strokeWidth="1" />
-              {[0,45,90,135,180,225,270,315].map((deg, i) => (
-                <ellipse
-                  key={i}
-                  cx={Math.cos(deg * Math.PI / 180) * 6}
-                  cy={Math.sin(deg * Math.PI / 180) * 6}
-                  rx="3" ry="1.5"
-                  transform={`rotate(${deg} ${Math.cos(deg * Math.PI / 180) * 6} ${Math.sin(deg * Math.PI / 180) * 6})`}
-                  fill="rgba(200,140,40,0.5)"
-                />
-              ))}
-              <circle cx="0" cy="0" r="3" fill="rgba(200,140,40,0.7)" />
-            </g>
-
-            {/* Diya flame */}
-            <g transform="translate(120,30)">
-              <ellipse cx="0" cy="4" rx="4" ry="2" fill="rgba(139,90,26,0.5)" />
-              <ellipse className="diya-flame" cx="0" cy="0" rx="2.5" ry="5"
-                fill="url(#flameGrad)" />
-              <defs>
-                <radialGradient id="flameGrad" cx="50%" cy="80%" r="50%">
-                  <stop offset="0%"   stopColor="#fff5c0" />
-                  <stop offset="50%"  stopColor="#f97316" />
-                  <stop offset="100%" stopColor="rgba(249,115,22,0)" />
-                </radialGradient>
-              </defs>
-            </g>
-
-            {/* Corner ornament dots */}
-            {[30, 60, 90, 150, 180, 210].map((x, i) => (
-              <circle key={i} cx={x} cy="88" r="1.5" fill="rgba(139,90,26,0.4)" />
-            ))}
-          </svg>
-        </div>
 
         {/* ── Title block ── */}
         <div className="portal-title-block">
@@ -517,14 +491,6 @@ export default function DashboardSidebar() {
           </g>
           <circle cx="60" cy="60" r="6" fill="#c9a84c" />
         </svg>
-
-        {/* ── Footer inscription ── */}
-        <div className="sidebar-footer">
-          <div className="footer-divider" />
-          <span className="footer-sanskrit">सा विद्या या विमुक्तये</span>
-          <span className="footer-tagline">Knowledge is that which liberates</span>
-        </div>
-
       </aside>
     </>
   )

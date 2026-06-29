@@ -37,5 +37,30 @@ export default defineType({
         },
       ],
     }),
+    defineField({
+      name: "videos",
+      title: "Videos",
+      type: "array",
+      of: [
+        {
+          type: "file",
+          options: {
+            accept: "video/*"
+          },
+          fields: [
+            {
+              name: "title",
+              type: "string",
+              title: "Title",
+            },
+            {
+              name: "description",
+              type: "string",
+              title: "Description",
+            }
+          ]
+        }
+      ]
+    }),
   ],
 });

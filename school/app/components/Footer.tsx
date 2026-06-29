@@ -6,7 +6,6 @@ export default function Footer() {
 
         .footer-root {
           font-family: 'DM Sans', sans-serif;
-          background-color: black;
           position: relative;
           overflow: hidden;
         }
@@ -83,7 +82,7 @@ export default function Footer() {
           font-family: 'Cormorant Garamond', serif;
           font-size: 2rem;
           font-weight: 300;
-          color: #FAF8F5;
+          color: black;
           letter-spacing: 0.02em;
           line-height: 1;
           margin-bottom: 1rem;
@@ -260,8 +259,7 @@ export default function Footer() {
           color: #C4A484;
         }
       `}</style>
-
-      <footer className="footer-root">
+      <footer className="footer-root bg-white">
         <div className="footer-noise" />
 
         <div className="footer-inner">

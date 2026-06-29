@@ -1,7 +1,9 @@
 import { getCurrentUser } from '../../lib/auth';
 import { client } from "@/sanity/lib/client";
-import { careerQuery } from '../lib/queries/career';
+import { careerQuery, jobPostingsQuery } from '../lib/queries/career';
+import JobPostingList from '../components/career/JobPostingList';
 import { PortableText } from "@portabletext/react";
+import  Footer  from '../components/Footer';
 
 const fallbackHighlights = [
   {
@@ -49,51 +51,18 @@ const fallbackBenefits = [
   },
 ];
 
-const fallbackRoles = [
-  {
-    title: 'Primary School Teacher',
-    location: 'On Campus • Full-time',
-    summary:
-      'Inspire young learners with joyful instruction, strong classroom routines, and a nurturing learning environment aligned to our school values.',
-    requirements: [
-      'Bachelor’s degree in Education or related field',
-      'Experience planning differentiated lessons and positive classroom culture',
-      'Strong communication with families and a collaborative mindset',
-    ],
-  },
-  {
-    title: 'School Counselor',
-    location: 'On Campus • Full-time',
-    summary:
-      'Support students’ social-emotional growth, coordinate counseling programs, and partner with families to build resilience and confidence.',
-    requirements: [
-      'Degree in Counseling, Social Work, or related discipline',
-      'Experience with individual and group student support',
-      'A warm, empathetic, and growth-oriented approach',
-    ],
-  },
-  {
-    title: 'Admissions & Community Relations Coordinator',
-    location: 'On Campus • Full-time',
-    summary:
-      'Help families discover our school story while supporting outreach, events, and a welcoming admission journey.',
-    requirements: [
-      'Strong communication and organizational skills',
-      'Experience managing events, enrollment support, or community engagement',
-      'A friendly, service-first attitude and strong attention to detail',
-    ],
-  },
-];
 
 export default async function CareersPage() {
   const user = await getCurrentUser();
-  const careerData = await client.fetch(careerQuery);
+  const [careerData, jobPostings] = await Promise.all([
+    client.fetch(careerQuery),
+    client.fetch(jobPostingsQuery)
+  ]);
 
   const hero = careerData?.hero || {};
   const overview = careerData?.overview || {};
   const highlights = careerData?.process?.length > 0 ? careerData.process : fallbackHighlights;
   const benefits = careerData?.eligibility?.length > 0 ? careerData.eligibility.map((e: any) => ({ title: e.role, description: e.criteria })) : fallbackBenefits;
-  const roles = careerData?.documents?.length > 0 ? careerData.documents.map((d: any) => ({ title: d.name, summary: d.notes, location: 'On Campus', requirements: [] })) : fallbackRoles;
   const cta = careerData?.cta || {};
 
   return (
@@ -102,7 +71,7 @@ export default async function CareersPage() {
         <section
           className="relative overflow-hidden isolate pt-24 sm:pt-28"
           style={{
-            backgroundImage: `url('${hero.backgroundImage || '/images/download.jpg'}')`,
+            backgroundImage: `url('${hero.backgroundImage || '/images/career.png'}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
@@ -212,46 +181,7 @@ export default async function CareersPage() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-6 xl:grid-cols-3">
-            {roles.map((role: any) => (
-              <article
-                key={role.title}
-                className="animate-fade-in-up overflow-hidden rounded-4xl border border-slate-200 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.08)]"
-              >
-                <div className="bg-sky-900/95 px-6 py-6 text-white">
-                  <p className="text-sm uppercase tracking-[0.24em] text-sky-200">{role.location || "On Campus"}</p>
-                  <h3 className="mt-3 text-2xl font-semibold">{role.title}</h3>
-                </div>
-                <div className="space-y-6 px-6 py-8">
-                  <p className="text-sm leading-7 text-slate-700">{role.summary}</p>
-                  {role.requirements && role.requirements.length > 0 && (
-                    <div className="space-y-3">
-                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">What we look for</p>
-                      <ul className="space-y-3 text-sm leading-7 text-slate-600">
-                        {role.requirements.map((requirement: string) => (
-                          <li key={requirement} className="flex gap-3">
-                            <span className="mt-1 inline-flex h-2.5 w-2.5 flex-none rounded-full bg-sky-800" />
-                            {requirement}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <a
-                      href="mailto:careers@school.edu"
-                      className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-                    >
-                      Apply now
-                    </a>
-                    <span className="text-xs uppercase tracking-[0.24em] text-slate-500 sm:text-sm">
-                      Immediate start considered
-                    </span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+          <JobPostingList postings={jobPostings} />
         </section>
 
         <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-8">
@@ -276,6 +206,7 @@ export default async function CareersPage() {
           </div>
         </section>
       </main>
+      <Footer/>
     </>
   );
 }

@@ -44,6 +44,39 @@ export default function DashboardTabs({ enquiries }: { enquiries: any[] }) {
   const activeEnquiry = enquiries[activeTab]
 
   return (
+    <>
+    <style>
+      {
+        `.logout-btn {
+                    font-family: 'Lato', sans-serif;
+                    font-size: 0.68rem;
+                    font-weight: 700;
+                    letter-spacing: 0.18em;
+                    text-transform: uppercase;
+                    padding: 7px 16px;
+                    border-radius: 8px;
+                    border: 1px solid rgba(201,168,76,0.35);
+                    background: transparent;
+                    color: red;
+                    cursor: pointer;
+                    position: relative;
+                    overflow: hidden;
+                    transition: color 0.25s, border-color 0.25s;
+                }
+                .logout-btn::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(201,168,76,0.08);
+                    transform: translateX(-101%);
+                    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+                }
+                .logout-btn:hover { color: red; border-color: #c9a84c; }
+                .logout-btn:hover::before { transform: translateX(0); }
+                .logout-btn:active { transform: scale(0.97); }
+        `
+      }
+    </style>
     <div className="max-w-4xl mx-auto px-4 py-6">
 
       {/* TABS HEADER */}
@@ -81,7 +114,7 @@ export default function DashboardTabs({ enquiries }: { enquiries: any[] }) {
         {(activeEnquiry.status === "new" ||
           activeEnquiry.status === "contacted" ||
           activeEnquiry.documentsStatus === "pending") && (
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5">
               <p className="text-[11px] font-medium uppercase tracking-widest text-gray-400 mb-4">
                 Required documents
               </p>
@@ -95,7 +128,7 @@ export default function DashboardTabs({ enquiries }: { enquiries: any[] }) {
         {/* INTERVIEW SCHEDULER */}
         {activeEnquiry.status === "documents_submitted" &&
           activeEnquiry.interviewApprovalStatus !== "pending" && (
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5">
               <p className="text-[11px] font-medium uppercase tracking-widest text-gray-400 mb-1">
                 Schedule interview
               </p>
@@ -126,8 +159,8 @@ export default function DashboardTabs({ enquiries }: { enquiries: any[] }) {
           )}
 
         {/* ADMISSION STATUS */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-gray-400 mb-3">
+        <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5">
+          <p className="text-[11px] flex items-center justify-center font-bold uppercase tracking-widest text-black mb-3">
             Admission status
           </p>
           <AdmissionStatus status={activeEnquiry.status} />
@@ -139,7 +172,7 @@ export default function DashboardTabs({ enquiries }: { enquiries: any[] }) {
              <button
                onClick={() => handleWithdraw(activeEnquiry._id, activeEnquiry.studentName)}
                disabled={isWithdrawing}
-               className="text-xs font-medium text-red-500 hover:text-red-700 hover:underline transition-colors disabled:opacity-50"
+               className="logout-btn"
              >
                {isWithdrawing ? "Withdrawing..." : `Withdraw Application`}
              </button>
@@ -148,5 +181,6 @@ export default function DashboardTabs({ enquiries }: { enquiries: any[] }) {
 
       </div>
     </div>
+    </>
   )
 }

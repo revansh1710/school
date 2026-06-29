@@ -1,3 +1,5 @@
+import Footer from "../components/Footer";
+
 export default function CreditsPage() {
     return (<main className="bg-neutral-50 min-h-screen">
         {/* Hero */} <section className="max-w-4xl mx-auto px-6 pt-16 pb-10"> <div className="mb-6"> <p className="text-[11px] uppercase tracking-[0.25em] text-amber-600 font-semibold">
@@ -72,6 +74,7 @@ export default function CreditsPage() {
                 ]}
             />
         </section>
+        <Footer/>
     </main>
 
 
@@ -115,7 +118,7 @@ function CreditSection({
             ))}
         </div>
     </div>
-
+    
 
     )
 }

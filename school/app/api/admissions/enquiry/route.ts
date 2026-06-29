@@ -1,27 +1,7 @@
 import { NextResponse } from "next/server"
 import { serverClient } from "../../../lib/sanity/serverClient"
 import { sendWelcomeMail } from "../../../lib/utils/mailService"
-import { admissionConfig } from "../../../../lib/admissionConfig"
-
-function mapGradeToCategory(grade: string) {
-  if (!grade) return "primary"
-
-  const g = grade.toLowerCase().trim()
-
-  const prePrimaryGrades = ["nursery", "lkg", "ukg", "pre", "pre-primary"]
-
-  if (prePrimaryGrades.some(p => g.includes(p))) {
-    return "pre_primary"
-  }
-  const match = g.match(/\d+/)
-  const num = match ? parseInt(match[0]) : null
-
-  if (num === null) return "primary"
-
-  if (num <= 5) return "primary"
-  if (num <= 8) return "middle"
-  return "secondary"
-}
+import { admissionConfig, mapGradeToCategory } from "../../../../lib/admissionConfig"
 
 export async function POST(req: Request) {
   try {
@@ -32,6 +12,24 @@ export async function POST(req: Request) {
         { error: "Missing required fields" },
         { status: 400 }
       )
+    }
+
+    const emailLower = body.email.toLowerCase().trim()
+
+    // Validation: Check if an enquiry with this email already exists
+    const existingEnquiry = await serverClient.fetch(
+      `*[_type == "admissionEnquiry" && email == $email][0]`,
+      { email: emailLower }
+    )
+
+    if (existingEnquiry) {
+      const existingParentName = existingEnquiry.parentName || ""
+      if (existingParentName.trim().toLowerCase() !== body.parentName.trim().toLowerCase()) {
+        return NextResponse.json(
+          { error: `This email is already registered. Please use the same parent name which has been already submitted for enquiry or use a different email.` },
+          { status: 400 }
+        )
+      }
     }
 
     // Map over each student and create an independent Sanity document
@@ -45,8 +43,8 @@ export async function POST(req: Request) {
 
       await serverClient.create({
         _type: "admissionEnquiry",
-        parentName: body.parentName,
-        email: body.email,
+        parentName: body.parentName.trim(),
+        email: emailLower,
         phone: body.phone,
         studentName: student.studentName,
         grade: student.grade,
@@ -61,7 +59,7 @@ export async function POST(req: Request) {
 
     // Send only one welcome email to the parent
     await sendWelcomeMail({
-      to: body.email,
+      to: emailLower,
       name: body.parentName,
     })
 
