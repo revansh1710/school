@@ -24,6 +24,8 @@ const navItems = [
   { name: "Teachers Directory", href: "/dashboard/teachers", icon: "👥", sanskrit: "शिक्षक-निर्देशिका" },
   { name: "Class Timetable", href: "/dashboard/timetable", icon: "🗓️", sanskrit: "समय-सारणी" },
   { name: "Class Notes", href: "/dashboard/notes", icon: "📝", sanskrit: "कक्षा-टिप्पण्यः" },
+  { name: "Exam Results", href: "/dashboard/results", icon: "🎓", sanskrit: "परीक्षा-परिणामाः" },
+  { name: "Exam Timetable", href: "/dashboard/exam-timetable", icon: "📋", sanskrit: "परीक्षा-समयसारणी" },
 ]
 
 export default function DashboardSidebar() {

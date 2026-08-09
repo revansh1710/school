@@ -134,7 +134,7 @@ export default function HeroCanvas() {
 
             <Image
 
-              src="/images/Hero.jpg"
+              src="/images/hero_final.png"
               alt="Students"
 
               width={700}

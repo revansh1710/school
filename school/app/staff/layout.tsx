@@ -1,7 +1,7 @@
 import { getStaffUser } from "../../lib/adminAuth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { LayoutDashboard, CalendarCheck, GraduationCap, ClipboardList, User, BookOpen } from "lucide-react"
+import { LayoutDashboard, CalendarCheck, GraduationCap, ClipboardList, User, BookOpen, Calendar } from "lucide-react"
 import StaffSignOutButton from "../components/auth/StaffSignOutButton"
 
 export default async function StaffLayout({ children }: { children: React.ReactNode }) {
@@ -40,6 +40,14 @@ export default async function StaffLayout({ children }: { children: React.ReactN
           <Link href="/staff/notes" className="flex items-center px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors group">
             <BookOpen className="w-5 h-5 mr-3 text-slate-500 group-hover:text-indigo-400 transition-colors" />
             <span className="font-medium text-sm">Class Notes</span>
+          </Link>
+          <Link href="/staff/results" className="flex items-center px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors group">
+            <GraduationCap className="w-5 h-5 mr-3 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+            <span className="font-medium text-sm">Manage Results</span>
+          </Link>
+          <Link href="/staff/exam-timetable" className="flex items-center px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors group">
+            <Calendar className="w-5 h-5 mr-3 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+            <span className="font-medium text-sm">Exam Timetable</span>
           </Link>
         </nav>
 
