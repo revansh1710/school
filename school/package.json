@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate up"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
