@@ -24,6 +24,7 @@ const departmentIcons: Record<number, string> = {
 };
 
 export default function AcademicsSection({ data }: Props) {
+  if (!data) return null;
   return (
     <section style={{ position: "relative", overflow: "hidden", background: "#ffffff" }} id="academics">
 

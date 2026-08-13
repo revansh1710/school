@@ -18,11 +18,10 @@ export default async function Home() {
   return (
     <>
       <HeroCanvas />
-      <></>
-      <AboutSection data={aboutData}/>
-      <AcademicsSection data={academicData}/>
-      <ContactSection data={contactData}/>
-      <Footer/>
+      {aboutData && <AboutSection data={aboutData} />}
+      {academicData && <AcademicsSection data={academicData} />}
+      {contactData && <ContactSection data={contactData} />}
+      <Footer />
     </>
   );
 }

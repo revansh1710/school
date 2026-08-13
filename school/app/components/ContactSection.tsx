@@ -5,6 +5,7 @@ type ContactProps = {
 };
 
 export default function ContactSection({ data }: ContactProps) {
+  if (!data) return null;
   const sectionRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const elements = sectionRef.current?.querySelectorAll(".reveal");

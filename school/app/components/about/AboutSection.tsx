@@ -239,6 +239,8 @@ function AchievementItem({ item }: { item: Achievement }) {
 
 /* ─── Main Component ─────────────────────────────────────────────────────── */
 export default function AboutSection({ data }: AboutProps) {
+  if (!data) return null;
+
   const principalImageUrl = data.principalImage
     ? urlFor(data.principalImage)?.width(600).height(600).quality(90).url()
     : null;
