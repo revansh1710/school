@@ -57,11 +57,15 @@ export async function POST(req: Request) {
       })
     }))
 
-    // Send only one welcome email to the parent
-    await sendWelcomeMail({
-      to: emailLower,
-      name: body.parentName,
-    })
+    // Send welcome email if SMTP is configured, safely handling any mail delivery issues
+    try {
+      await sendWelcomeMail({
+        to: emailLower,
+        name: body.parentName,
+      })
+    } catch (mailError) {
+      console.error("Welcome email delivery failed (enquiry was created):", mailError)
+    }
 
     return NextResponse.json({ success: true })
 
