@@ -39,7 +39,7 @@ export async function GET(req: Request) {
 
   response.cookies.set("session", session.id, {
     httpOnly: true,
-    secure: false, // true in production
+    secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 60 * 60 * 24 * 7
   })

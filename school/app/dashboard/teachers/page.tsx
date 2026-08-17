@@ -18,8 +18,10 @@ export default async function TeachersPage() {
     .map(c => `${c.name}=${c.value}`)
     .join("; ")
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
+
   // ✅ PASS COOKIES
-  const res = await fetch("http://localhost:3000/api/dashboard", {
+  const res = await fetch(`${baseUrl}/api/dashboard`, {
     cache: "no-store",
     headers: {
       Cookie: cookieHeader
