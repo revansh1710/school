@@ -261,240 +261,250 @@ const renderFooter = () => `
    WELCOME EMAIL
    ───────────────────────────────────────────── */
 const sendWelcomeMail = async ({ to, name }: { to: string; name: string }) => {
-  const pdfPath = path.join(process.cwd(), "public/admissions/prospectus.pdf")
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn("Skipping sendWelcomeMail: SMTP_USER or SMTP_PASS environment variables are missing.")
+    return { success: false, reason: "SMTP credentials missing" }
+  }
 
-  const steps = [
-    {
-      num: "01",
-      title: "Register Your Enquiry",
-      desc: "Complete an enquiry with the school so your email is registered in our system.",
-    },
-    {
-      num: "02",
-      title: "Use Your Registered Email",
-      desc: "On the login page, enter the same email address you used during your enquiry.",
-    },
-    {
-      num: "03",
-      title: "Receive Your Secure Link",
-      desc: "A one-time access link will be delivered instantly to your inbox.",
-    },
-    {
-      num: "04",
-      title: "Access Your Dashboard",
-      desc: "Click the link to log in securely — no password required.",
-    },
-  ]
+  try {
+    const pdfPath = path.join(process.cwd(), "public/admissions/prospectus.pdf")
 
-  const stepsHTML = steps
-    .map(
-      (s, i) => `
-    <tr>
-      <td style="padding: 0 0 14px 0;">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="step-${i + 1}" style="
-          background: linear-gradient(135deg, ${COLORS.navyLight} 0%, rgba(17,29,60,0.6) 100%);
-          border: 1px solid rgba(0,212,255,0.15);
-          border-left: 3px solid ${COLORS.cyan};
-          border-radius: 6px;
-        ">
-          <tr>
-            <td width="64" style="padding: 18px 0 18px 20px; vertical-align: top;">
-              <div style="
-                font-family: 'Courier New', monospace;
-                font-size: 20px; font-weight: 700;
-                color: ${COLORS.cyan}; opacity: 0.45; line-height: 1;
-              ">${s.num}</div>
-            </td>
-            <td style="padding: 18px 20px 18px 0; vertical-align: top;">
-              <div style="
-                font-family: Georgia, serif;
-                font-size: 13px; font-weight: 700;
-                color: ${COLORS.white}; margin-bottom: 3px; letter-spacing: 0.5px;
-              ">${s.title}</div>
-              <div style="
-                font-family: 'Courier New', monospace;
-                font-size: 12px; color: ${COLORS.grayMid}; line-height: 1.7;
-              ">${s.desc}</div>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  `
-    )
-    .join("")
+    const steps = [
+      {
+        num: "01",
+        title: "Register Your Enquiry",
+        desc: "Complete an enquiry with the school so your email is registered in our system.",
+      },
+      {
+        num: "02",
+        title: "Use Your Registered Email",
+        desc: "On the login page, enter the same email address you used during your enquiry.",
+      },
+      {
+        num: "03",
+        title: "Receive Your Secure Link",
+        desc: "A one-time access link will be delivered instantly to your inbox.",
+      },
+      {
+        num: "04",
+        title: "Access Your Dashboard",
+        desc: "Click the link to log in securely — no password required.",
+      },
+    ]
 
-  const html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome to School</title>
-  ${ANIMATION_STYLES}
-</head>
-<body style="margin:0;padding:0;background:#060b18;">
-
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#060b18;padding:32px 16px;">
-    <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="
-          max-width:600px;
-          width:100%;
-          background:${COLORS.navyMid};
-          border-radius:10px;
-          overflow:hidden;
-          border:1px solid rgba(0,212,255,0.18);
-          box-shadow:0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,212,255,0.08);
-        ">
-
-          <!-- HEADER -->
-          <tr><td>${renderHeader("Admissions Portal")}</td></tr>
-
-          <!-- BODY -->
-          <tr>
-            <td style="padding: 40px 40px 32px;">
-
-              <!-- Greeting -->
-              <div style="
-                font-family: 'Courier New', monospace;
-                font-size: 10px;
-                letter-spacing: 4px;
-                color: ${COLORS.cyan};
-                text-transform: uppercase;
-                margin-bottom: 12px;
-              ">WELCOME MESSAGE</div>
-
-              <h2 style="
-                font-family: Georgia, 'Times New Roman', serif;
-                font-size: 22px;
-                color: ${COLORS.white};
-                margin: 0 0 16px;
-                font-weight: 400;
-                letter-spacing: 0.5px;
-              ">Dear <span style="color:${COLORS.gold};">${name}</span>,</h2>
-
-              <p style="
-                font-family: Arial, sans-serif;
-                font-size: 14px;
-                color: ${COLORS.grayMid};
-                line-height: 1.8;
-                margin: 0 0 28px;
-              ">
-                Welcome to School's Parent Portal. We are delighted to have your family join our community. 
-                Your child's journey with us begins here — with secure, seamless access to everything you need.
-              </p>
-
-              <!-- Divider with label -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 24px;">
-                <tr>
-                  <td height="1" style="background: rgba(0,212,255,0.15); font-size:0; line-height:0;">&nbsp;</td>
-                  <td style="padding: 0 16px; white-space:nowrap;">
-                    <span style="
-                      font-family: 'Courier New', monospace;
-                      font-size: 9px;
-                      letter-spacing: 3px;
-                      color: ${COLORS.cyan};
-                      text-transform: uppercase;
-                    ">HOW TO ACCESS</span>
-                  </td>
-                  <td height="1" style="background: rgba(0,212,255,0.15); font-size:0; line-height:0;">&nbsp;</td>
-                </tr>
-              </table>
-
-              <!-- Steps -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                ${stepsHTML}
-              </table>
-
-              <!-- Info callout box -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" class="callout-pulse" style="margin-top:8px; margin-bottom:32px;">
-                <tr>
-                  <td style="
-                    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(0,212,255,0.06) 100%);
-                    border: 1px solid rgba(201,168,76,0.25);
-                    border-radius: 6px;
-                    padding: 16px 20px;
-                  ">
-                    <div style="
-                      font-family: 'Courier New', monospace;
-                      font-size: 10px;
-                      letter-spacing: 3px;
-                      color: ${COLORS.gold};
-                      text-transform: uppercase;
-                      margin-bottom: 6px;
-                    ">📎 ATTACHED: PROSPECTUS</div>
-                    <div style="
-                      font-family: Arial, sans-serif;
-                      font-size: 13px;
-                      color: ${COLORS.grayMid};
-                      line-height: 1.6;
-                    ">
-                      We have attached our Admissions Prospectus for your review. 
-                      It contains full details on our curriculum, facilities, fee structure, and admissions timeline.
-                    </div>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Sign-off -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td height="1" style="background: rgba(0,212,255,0.12); font-size:0; line-height:0; margin-bottom:20px;">&nbsp;</td>
-                </tr>
-              </table>
-              <div style="
-                font-family: Arial, sans-serif;
-                font-size: 13px;
-                color: ${COLORS.grayMid};
-                line-height: 1.8;
-                margin-top: 20px;
-              ">
-                Warm regards,<br/>
-                <span style="
+    const stepsHTML = steps
+      .map(
+        (s, i) => `
+      <tr>
+        <td style="padding: 0 0 14px 0;">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" class="step-${i + 1}" style="
+            background: linear-gradient(135deg, ${COLORS.navyLight} 0%, rgba(17,29,60,0.6) 100%);
+            border: 1px solid rgba(0,212,255,0.15);
+            border-left: 3px solid ${COLORS.cyan};
+            border-radius: 6px;
+          ">
+            <tr>
+              <td width="64" style="padding: 18px 0 18px 20px; vertical-align: top;">
+                <div style="
+                  font-family: 'Courier New', monospace;
+                  font-size: 20px; font-weight: 700;
+                  color: ${COLORS.cyan}; opacity: 0.45; line-height: 1;
+                ">${s.num}</div>
+              </td>
+              <td style="padding: 18px 20px 18px 0; vertical-align: top;">
+                <div style="
                   font-family: Georgia, serif;
-                  font-size: 15px;
-                  color: ${COLORS.white};
-                  font-weight: 600;
-                ">School Administration</span><br/>
-                <span style="
+                  font-size: 13px; font-weight: 700;
+                  color: ${COLORS.white}; margin-bottom: 3px; letter-spacing: 0.5px;
+                ">${s.title}</div>
+                <div style="
+                  font-family: 'Courier New', monospace;
+                  font-size: 12px; color: ${COLORS.grayMid}; line-height: 1.7;
+                ">${s.desc}</div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    `
+      )
+      .join("")
+
+    const html = `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Welcome to School</title>
+    ${ANIMATION_STYLES}
+  </head>
+  <body style="margin:0;padding:0;background:#060b18;">
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#060b18;padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table width="600" cellpadding="0" cellspacing="0" border="0" style="
+            max-width:600px;
+            width:100%;
+            background:${COLORS.navyMid};
+            border-radius:10px;
+            overflow:hidden;
+            border:1px solid rgba(0,212,255,0.18);
+            box-shadow:0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,212,255,0.08);
+          ">
+
+            <!-- HEADER -->
+            <tr><td>${renderHeader("Admissions Portal")}</td></tr>
+
+            <!-- BODY -->
+            <tr>
+              <td style="padding: 40px 40px 32px;">
+
+                <!-- Greeting -->
+                <div style="
                   font-family: 'Courier New', monospace;
                   font-size: 10px;
-                  letter-spacing: 2px;
+                  letter-spacing: 4px;
                   color: ${COLORS.cyan};
-                ">ADMISSIONS OFFICE</span>
-              </div>
+                  text-transform: uppercase;
+                  margin-bottom: 12px;
+                ">WELCOME MESSAGE</div>
 
-            </td>
-          </tr>
+                <h2 style="
+                  font-family: Georgia, 'Times New Roman', serif;
+                  font-size: 22px;
+                  color: ${COLORS.white};
+                  margin: 0 0 16px;
+                  font-weight: 400;
+                  letter-spacing: 0.5px;
+                ">Dear <span style="color:${COLORS.gold};">${name}</span>,</h2>
 
-          <!-- FOOTER -->
-          <tr><td>${renderFooter()}</td></tr>
+                <p style="
+                  font-family: Arial, sans-serif;
+                  font-size: 14px;
+                  color: ${COLORS.grayMid};
+                  line-height: 1.8;
+                  margin: 0 0 28px;
+                ">
+                  Welcome to School's Parent Portal. We are delighted to have your family join our community. 
+                  Your child's journey with us begins here — with secure, seamless access to everything you need.
+                </p>
 
-        </table>
-      </td>
-    </tr>
-  </table>
+                <!-- Divider with label -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 24px;">
+                  <tr>
+                    <td height="1" style="background: rgba(0,212,255,0.15); font-size:0; line-height:0;">&nbsp;</td>
+                    <td style="padding: 0 16px; white-space:nowrap;">
+                      <span style="
+                        font-family: 'Courier New', monospace;
+                        font-size: 9px;
+                        letter-spacing: 3px;
+                        color: ${COLORS.cyan};
+                        text-transform: uppercase;
+                      ">HOW TO ACCESS</span>
+                    </td>
+                    <td height="1" style="background: rgba(0,212,255,0.15); font-size:0; line-height:0;">&nbsp;</td>
+                  </tr>
+                </table>
 
-</body>
-</html>
-  `
+                <!-- Steps -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  ${stepsHTML}
+                </table>
 
-  const info = await transporter.sendMail({
-    from: `"School" <${process.env.SMTP_USER}>`,
-    to,
-    subject: "Welcome to School — Admissions Information",
-    html,
-    attachments: [
-      {
-        filename: "School-Admissions-Prospectus.pdf",
-        path: pdfPath,
-        contentType: "application/pdf",
-      },
-    ],
-  })
+                <!-- Info callout box -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" class="callout-pulse" style="margin-top:8px; margin-bottom:32px;">
+                  <tr>
+                    <td style="
+                      background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(0,212,255,0.06) 100%);
+                      border: 1px solid rgba(201,168,76,0.25);
+                      border-radius: 6px;
+                      padding: 16px 20px;
+                    ">
+                      <div style="
+                        font-family: 'Courier New', monospace;
+                        font-size: 10px;
+                        letter-spacing: 3px;
+                        color: ${COLORS.gold};
+                        text-transform: uppercase;
+                        margin-bottom: 6px;
+                      ">📎 ATTACHED: PROSPECTUS</div>
+                      <div style="
+                        font-family: Arial, sans-serif;
+                        font-size: 13px;
+                        color: ${COLORS.grayMid};
+                        line-height: 1.6;
+                      ">
+                        We have attached our Admissions Prospectus for your review. 
+                        It contains full details on our curriculum, facilities, fee structure, and admissions timeline.
+                      </div>
+                    </td>
+                  </tr>
+                </table>
 
-  return info
+                <!-- Sign-off -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td height="1" style="background: rgba(0,212,255,0.12); font-size:0; line-height:0; margin-bottom:20px;">&nbsp;</td>
+                  </tr>
+                </table>
+                <div style="
+                  font-family: Arial, sans-serif;
+                  font-size: 13px;
+                  color: ${COLORS.grayMid};
+                  line-height: 1.8;
+                  margin-top: 20px;
+                ">
+                  Warm regards,<br/>
+                  <span style="
+                    font-family: Georgia, serif;
+                    font-size: 15px;
+                    color: ${COLORS.white};
+                    font-weight: 600;
+                  ">School Administration</span><br/>
+                  <span style="
+                    font-family: 'Courier New', monospace;
+                    font-size: 10px;
+                    letter-spacing: 2px;
+                    color: ${COLORS.cyan};
+                  ">ADMISSIONS OFFICE</span>
+                </div>
+
+              </td>
+            </tr>
+
+            <!-- FOOTER -->
+            <tr><td>${renderFooter()}</td></tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+
+  </body>
+  </html>
+    `
+
+    const info = await transporter.sendMail({
+      from: `"School" <${process.env.SMTP_USER}>`,
+      to,
+      subject: "Welcome to School — Admissions Information",
+      html,
+      attachments: [
+        {
+          filename: "School-Admissions-Prospectus.pdf",
+          path: pdfPath,
+          contentType: "application/pdf",
+        },
+      ],
+    })
+
+    return info
+  } catch (error) {
+    console.error("sendWelcomeMail failed:", error)
+    return { success: false, error }
+  }
 }
 
 /* ─────────────────────────────────────────────
@@ -509,7 +519,13 @@ const sendMagicLoginMail = async ({
   name: string
   loginLink: string
 }) => {
-  const html = `
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn("Skipping sendMagicLoginMail: SMTP_USER or SMTP_PASS environment variables are missing.")
+    return { success: false, reason: "SMTP credentials missing" }
+  }
+
+  try {
+    const html = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -701,14 +717,18 @@ const sendMagicLoginMail = async ({
 </html>
   `
 
-  const info = await transporter.sendMail({
-    from: `"School" <${process.env.SMTP_USER}>`,
-    to,
-    subject: "⚡ Access Your Parent Dashboard — Secure Link Inside",
-    html,
-  })
+    const info = await transporter.sendMail({
+      from: `"School" <${process.env.SMTP_USER}>`,
+      to,
+      subject: "⚡ Access Your Parent Dashboard — Secure Link Inside",
+      html,
+    })
 
-  return info
+    return info
+  } catch (error) {
+    console.error("sendMagicLoginMail failed:", error)
+    return { success: false, error }
+  }
 }
 
 const getStatusContent = (status: string, parentName: string) => {
@@ -801,14 +821,19 @@ const sendStatusUpdateMail = async ({
   parentName: string
   status: string
 }) => {
-  const normalizedStatus = (status || "new").trim().toLowerCase()
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn("Skipping sendStatusUpdateMail: SMTP_USER or SMTP_PASS environment variables are missing.")
+    return { success: false, reason: "SMTP credentials missing" }
+  }
 
-  const content = getStatusContent(normalizedStatus, parentName)
+  try {
+    const normalizedStatus = (status || "new").trim().toLowerCase()
 
-  if (!content) return
+    const content = getStatusContent(normalizedStatus, parentName)
 
+    if (!content) return
 
-  const html = `
+    const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -875,12 +900,16 @@ Warm regards,<br/>
 </html>
 `
 
-  return transporter.sendMail({
-    from: `"School" <${process.env.SMTP_USER}>`,
-    to,
-    subject: content.subject,
-    html,
-  })
+    return await transporter.sendMail({
+      from: `"School" <${process.env.SMTP_USER}>`,
+      to,
+      subject: content.subject,
+      html,
+    })
+  } catch (error) {
+    console.error("sendStatusUpdateMail failed:", error)
+    return { success: false, error }
+  }
 }
 
 export { sendWelcomeMail, sendMagicLoginMail, sendStatusUpdateMail }

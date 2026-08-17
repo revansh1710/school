@@ -68,11 +68,19 @@ export async function POST(req: Request) {
 
   const loginLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`
 
-  await sendMagicLoginMail({
+  const mailResult = await sendMagicLoginMail({
     to: user.email,
     name: user.parentName || "Parent",
     loginLink
   })
+
+  if (mailResult && 'reason' in mailResult) {
+    return Response.json({
+      success: true,
+      message: "Login link generated, but email delivery is not configured on server.",
+      demoLink: loginLink
+    })
+  }
 
   return Response.json({
     success: true,
