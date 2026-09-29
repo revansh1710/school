@@ -10,12 +10,14 @@
     "migrate": "node-pg-migrate up"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.76",
     "@gsap/react": "^2.1.2",
     "@portabletext/react": "^6.0.2",
     "@sanity/document-internationalization": "^5.1.1",
     "@sanity/image-url": "^1.2.0",
     "@sanity/vision": "^4.22.0",
     "@sanity/webhook": "^4.0.4",
+    "ai": "^7.0.107",
     "animejs": "^3.2.2",
     "bcrypt": "^6.0.0",
     "date-fns": "^4.1.0",
@@ -35,7 +37,8 @@
     "react-router-dom": "^7.13.1",
     "sanity": "^5.13.0",
     "styled-components": "^6.3.11",
-    "three": "^0.184.0"
+    "three": "^0.184.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",

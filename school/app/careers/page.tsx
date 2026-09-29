@@ -2,6 +2,7 @@ import { getCurrentUser } from '../../lib/auth';
 import { client } from "@/sanity/lib/client";
 import { careerQuery, jobPostingsQuery } from '../lib/queries/career';
 import JobPostingList from '../components/career/JobPostingList';
+import CareerAdvisorChat from '../components/career/CareerAdvisorChat';
 import { PortableText } from "@portabletext/react";
 import  Footer  from '../components/Footer';
 
@@ -206,6 +207,7 @@ export default async function CareersPage() {
           </div>
         </section>
       </main>
+      <CareerAdvisorChat />
       <Footer/>
     </>
   );

@@ -1,7 +1,7 @@
 import { getStaffUser } from "../../lib/adminAuth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { LayoutDashboard, CalendarCheck, GraduationCap, ClipboardList, User, BookOpen, Calendar } from "lucide-react"
+import { LayoutDashboard, CalendarCheck, GraduationCap, ClipboardList, User, BookOpen, Calendar, Briefcase } from "lucide-react"
 import StaffSignOutButton from "../components/auth/StaffSignOutButton"
 
 export default async function StaffLayout({ children }: { children: React.ReactNode }) {
@@ -24,6 +24,10 @@ export default async function StaffLayout({ children }: { children: React.ReactN
           <Link href="/staff" className="flex items-center px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors group">
             <LayoutDashboard className="w-5 h-5 mr-3 text-slate-500 group-hover:text-indigo-400 transition-colors" />
             <span className="font-medium text-sm">Dashboard</span>
+          </Link>
+          <Link href="/staff/careers" className="flex items-center px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors group">
+            <Briefcase className="w-5 h-5 mr-3 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+            <span className="font-medium text-sm">Hiring & AI Triage</span>
           </Link>
           <Link href="/staff/attendance" className="flex items-center px-3 py-2.5 rounded-xl hover:bg-slate-800 hover:text-white transition-colors group">
             <CalendarCheck className="w-5 h-5 mr-3 text-slate-500 group-hover:text-indigo-400 transition-colors" />
