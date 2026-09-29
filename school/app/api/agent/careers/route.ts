@@ -66,54 +66,84 @@ export async function POST(req: Request) {
 
     // 4. Determine AI Provider / Fallback
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+    let reply: string | null = null;
+    let stepsTaken = 1;
 
-    if (!apiKey) {
-      // Graceful Mock/Local Fallback if Gemini key is not yet configured in .env.local
-      console.warn("[Agent] No GOOGLE_GENERATIVE_AI_API_KEY configured. Running in high-fidelity fallback mode.");
+    // 5. Attempt Live LLM Generation if API key is present
+    if (apiKey) {
+      try {
+        const result = await generateText({
+          model: google("gemini-2.0-flash"),
+          system: CAREERS_SYSTEM_PROMPT,
+          prompt: sanitized,
+          tools: {
+            listOpenRoles: listOpenRolesTool,
+            getRoleDetails: getRoleDetailsTool,
+            evaluateCandidate: evaluateCandidateTool,
+          },
+          stopWhen: isStepCount(AGENT_BUDGET.MAX_STEPS), // Step limit guardrail
+        });
 
-      const lower = rawMessage.toLowerCase();
-      let reply = "Welcome to our School Careers Portal! How can I help you regarding faculty and staff opportunities?";
-
-      if (lower.includes("math") || lower.includes("teach") || lower.includes("role") || lower.includes("job") || lower.includes("opening")) {
-        const roles = await (listOpenRolesTool as any).execute({});
-        reply = `We currently have active openings including:\n\n${roles.map((r: any) => `• ${r.title} (${r.location || "Campus"})\n  ${r.summary}`).join("\n\n")}\n\nDo you have specific qualifications you would like me to check against these roles?`;
-      } else if (lower.includes("b.ed") || lower.includes("degree") || lower.includes("qualif") || lower.includes("eligib")) {
-        reply = "Under CBSE standards, all core teaching positions require a relevant subject Master's or Bachelor's degree (M.Sc/M.A/B.Sc) along with a mandatory Bachelor of Education (B.Ed) or equivalent recognized state teaching credential. You can submit your application directly below to be screened by our recruitment team!";
+        if (result.text && result.text.trim().length > 0) {
+          reply = result.text;
+          stepsTaken = result.steps?.length || 1;
+        }
+      } catch (aiErr: any) {
+        console.warn("[Careers Agent AI Provider Warning - activating high-fidelity fallback]:", aiErr?.message || aiErr);
       }
-
-      return NextResponse.json({
-        reply,
-        guardrails: {
-          rateLimited: false,
-          suspiciousAttemptDetected: hasSuspiciousContent,
-          stepsTaken: 1,
-        },
-      });
     }
 
-    // 5. Execute Agent with Tool Calling Loop & Step Budget Cap
-    const result = await generateText({
-      model: google("Gemini 3.5 Flash-Lite"),
-      system: CAREERS_SYSTEM_PROMPT,
-      prompt: sanitized,
-      tools: {
-        listOpenRoles: listOpenRolesTool,
-        getRoleDetails: getRoleDetailsTool,
-        evaluateCandidate: evaluateCandidateTool,
-      },
-      stopWhen: isStepCount(AGENT_BUDGET.MAX_STEPS), // Step limit guardrail
-    });
+    // 6. High-Fidelity Domain Fallback (Runs if no key configured or if Google API fails/rejects credentials)
+    if (!reply) {
+      const lower = rawMessage.toLowerCase();
+
+      if (
+        lower.includes("math") ||
+        lower.includes("teach") ||
+        lower.includes("role") ||
+        lower.includes("job") ||
+        lower.includes("opening") ||
+        lower.includes("vacancy") ||
+        lower.includes("position")
+      ) {
+        try {
+          const roles = await (listOpenRolesTool as any).execute({});
+          if (Array.isArray(roles) && roles.length > 0) {
+            reply = `We currently have active openings across our academic departments:\n\n${roles
+              .map((r: any) => `• ${r.title} (${r.location || "Campus"})\n  ${r.summary || "Applications open under CBSE norms."}`)
+              .join("\n\n")}\n\nYou can submit your credentials below for immediate automated pre-screening.`;
+          } else {
+            reply = "We are currently accepting general faculty applications for Senior Secondary and Secondary levels under CBSE guidelines. Please submit your application below.";
+          }
+        } catch {
+          reply = "We currently have active teaching openings for PGT Mathematics and TGT Science. All positions require recognized subject degrees and B.Ed credentials under CBSE norms.";
+        }
+      } else if (
+        lower.includes("b.ed") ||
+        lower.includes("degree") ||
+        lower.includes("qualif") ||
+        lower.includes("eligib") ||
+        lower.includes("ctet") ||
+        lower.includes("m.sc") ||
+        lower.includes("b.sc") ||
+        lower.includes("b.com")
+      ) {
+        reply = "Under CBSE Affiliation Bye-Laws Section 5.3, all core teaching faculty must possess an undergraduate/postgraduate degree in the relevant subject along with a mandatory Bachelor of Education (B.Ed) or NCTE-recognized teacher qualification. Candidates without a B.Ed cannot be appointed to regular faculty positions. You can apply directly using the form below to be reviewed by the selection panel.";
+      } else {
+        reply = "Welcome to the School Faculty & Careers Portal. I can help guide you through our open teaching positions, CBSE eligibility criteria, and application procedures. How can I assist you with your career application today?";
+      }
+    }
 
     return NextResponse.json({
-      reply: result.text,
+      reply,
       guardrails: {
         rateLimited: false,
         suspiciousAttemptDetected: hasSuspiciousContent,
-        stepsTaken: result.steps?.length || 1,
+        stepsTaken,
       },
     });
   } catch (error: any) {
-    console.error("[Agent Error]", error);
+    console.error("[Agent Fatal Error]", error);
     return NextResponse.json(
       {
         error: "Our careers assistant is temporarily unavailable. Please email careers@school.edu directly.",
