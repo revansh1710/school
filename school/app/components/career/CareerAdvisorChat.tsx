@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { MessageSquare, X, Send, Bot, User, Sparkles, ShieldCheck, AlertCircle } from "lucide-react";
+import { MessageSquare, X, Send, Bot, User, Sparkles, ShieldCheck, AlertCircle, RotateCcw } from "lucide-react";
 
 interface Message {
   id: string;
@@ -13,6 +13,16 @@ interface Message {
     stepsTaken?: number;
   };
 }
+
+const SESSION_STORAGE_KEY = "school_career_advisor_session_v1";
+
+const DEFAULT_WELCOME_MESSAGE: Message = {
+  id: "welcome-1",
+  role: "assistant",
+  content:
+    "Hello! I am the School Faculty & Careers Advisor. I can check active openings, verify your eligibility against CBSE standards, and guide your application. How can I help you today?",
+  timestamp: "09:00 AM",
+};
 
 const PRESET_QUESTIONS = [
   "What positions are currently open?",
@@ -280,19 +290,30 @@ function renderCleanMessage(content: string, isUser: boolean) {
 
 export default function CareerAdvisorChat() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome-1",
-      role: "assistant",
-      content:
-        "Hello! I am the School Faculty & Careers Advisor. I can check active openings, verify your eligibility against CBSE standards, and guide your application. How can I help you today?",
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([DEFAULT_WELCOME_MESSAGE]);
+  const [conversationSummary, setConversationSummary] = useState<string>("");
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // 1. Rehydrate chat history and rolling summary from sessionStorage on mount
+  useEffect(() => {
+    try {
+      const stored = sessionStorage.getItem(SESSION_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed.messages) && parsed.messages.length > 0) {
+          setMessages(parsed.messages);
+        }
+        if (typeof parsed.summary === "string") {
+          setConversationSummary(parsed.summary);
+        }
+      }
+    } catch (e) {
+      console.warn("Could not read chat history from sessionStorage", e);
+    }
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -303,6 +324,37 @@ export default function CareerAdvisorChat() {
       scrollToBottom();
     }
   }, [messages, isOpen]);
+
+  // Helper to persist updated messages and rolling summary to sessionStorage
+  const persistSession = (newMessages: Message[], newSummary: string) => {
+    try {
+      sessionStorage.setItem(
+        SESSION_STORAGE_KEY,
+        JSON.stringify({
+          messages: newMessages,
+          summary: newSummary,
+        })
+      );
+    } catch (e) {
+      console.warn("Could not write chat history to sessionStorage", e);
+    }
+  };
+
+  // Reset conversation handler
+  const handleResetConversation = () => {
+    try {
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    } catch (e) {
+      console.warn("Could not clear sessionStorage", e);
+    }
+    const freshWelcome: Message = {
+      ...DEFAULT_WELCOME_MESSAGE,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+    setMessages([freshWelcome]);
+    setConversationSummary("");
+    setErrorBanner(null);
+  };
 
   const handleSendMessage = async (textToSend?: string) => {
     const query = (textToSend || inputValue).trim();
@@ -318,14 +370,26 @@ export default function CareerAdvisorChat() {
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    const nextMessages = [...messages, userMsg];
+    setMessages(nextMessages);
     setIsLoading(true);
 
     try {
+      // Rolling window: Send only the last 4 verbatim messages + conversationSummary
+      // This bounds token payload to <150 tokens while maintaining complete memory!
+      const limitedContextMessages = nextMessages.slice(-4).map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
       const response = await fetch("/api/agent/careers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: query }),
+        body: JSON.stringify({
+          message: query,
+          messages: limitedContextMessages,
+          conversationSummary,
+        }),
       });
 
       const data = await response.json();
@@ -347,7 +411,12 @@ export default function CareerAdvisorChat() {
         guardrails: data.guardrails,
       };
 
-      setMessages((prev) => [...prev, assistantMsg]);
+      const updatedAllMessages = [...nextMessages, assistantMsg];
+      const updatedSummary = data.conversationSummary || conversationSummary;
+
+      setMessages(updatedAllMessages);
+      setConversationSummary(updatedSummary);
+      persistSession(updatedAllMessages, updatedSummary);
     } catch (err: any) {
       console.error("Chat error:", err);
       setErrorBanner("Network error. Please check your connection.");
@@ -394,12 +463,22 @@ export default function CareerAdvisorChat() {
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="ca-close-btn relative rounded-full p-1.5 text-slate-400 hover:bg-white/10 hover:text-white cursor-pointer"
-            >
-              <X className="h-5 w-5" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={handleResetConversation}
+                title="Reset conversation"
+                className="ca-close-btn relative rounded-full p-1.5 text-slate-400 hover:bg-white/10 hover:text-white cursor-pointer"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                title="Close advisor"
+                className="ca-close-btn relative rounded-full p-1.5 text-slate-400 hover:bg-white/10 hover:text-white cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
           {/* Error Banner */}
